@@ -13,10 +13,13 @@ README for JavaWorld
 
 Table of Contents
 
-	Section 1 - Welcome
-	Section 2 - How do I play JavaWorld? (See NOTE)
-	Section 3 - What can I do in JavaWorld?
-	Section 4 - Can I also use this? Yes!
+	Section 1	- Welcome
+	Section 2	- How do I play JavaWorld? (See NOTE)
+	Section 3	- What can I do in JavaWorld?
+	Section 4	- Can I also use this? Yes!
+	Section 5	- All the PostScript notes.
+	Appendix A	- TODO
+	Appendix B	- Compiling, Building, and Running JavaWorld
 
 --------------------------------------------------------------------------------
 
@@ -39,6 +42,8 @@ JCreator and therefore has the project layout and workspace / project files
 associated with JCreator. After the initial project was created, most of the
 future developments were added via a mix of IDEs, therefore, you may build this 
 project via command line from the ./src/ folder using the build.php script.
+
+See Appendix B for further information.
 
 ====================================
 
@@ -147,3 +152,16 @@ Appendix A - TODO
 		accounted for. This includes ensuring that every call to an
 		external method has been tested.
 	3. Create a build script which results in a jar file.
+
+Appendix B - Compiling, Building, and Running JavaWorld
+
+	1. Pull JavaWorld from its git repository
+		- Presuming 'git clone git@github.com:nswarner/JavaWorld'
+		- The following 3 commands start in the top level directory
+	2. Enter into the ./src directory and run the build.php script
+	3. Enter into the ./classes directory and run the build_jar script
+	4. Enter into the ./bin directory and run JavaWorld.jar
+
+	Alternatively, after 1...
+	2. Run the 'imlazy' script. It will do the rest of the work for you.
+
