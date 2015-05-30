@@ -1,4 +1,10 @@
+// Import necessary packages, classes, and interfaces
+import java.net.*;
+import java.io.*;
+import java.util.Scanner;
+
 /**
+ *<pre>
  *	Purpose
  *
  *		The GameServer class houses the initialization and core processes of JavaWorld. The first
@@ -7,35 +13,6 @@
  *		we spawn the first Thread which manages incoming connections. At this point, we then
  *		begin the primary game loop where we interpret the incoming commands from each connection.
  *
- *	Algorithm
- *
- *		1. Declare the GameServer class
- *		2. Import Network and IO packages
- *		3. Import the Scanner class
- *		4. Declare the main method
- *		5. Declare and instantiate a Scanner object for keyboard input
- *		6. Declare Strings for temporary file and user input
- *		7. Declare a boolean for the main game loop
- *		8. Declare and instantiate the main World object
- *		9. Declare a ServerSocket object
- *		10. Try to initialize the ServerSocket object using the constant Port
- *		11. Catch any Exceptions
- *		12. Load all of the default rooms into our World object
- *		13. Load all of the default things 
- *		14. Ask the user if they want to use the default config file
- *		15. If the user doesn't explicitly say no, load the default config file
-			- Call the Config and Seed initialization methods
- *		16. Load the pseudo-random double generator from file (considered our seed)
- *		17. Notify the admin that the game has finished loading
- *		18. Spawn a thread to accept incoming connections
- *		19. Begin the main game loop
- *			- Check if there are any things to update
- *			- Synchronize the Player class to ensure thread safety while using
- *				the Player's Vector
- *				- Update the state of all players
- *				- Check if any player has new input
- *			- Yield the thread to allow for the login thread to add a new player
- *
  *	Structure / Process
  *
  *		After the ServerSocket is initialized, the Zones are loaded first in the hierarchy. Rooms
@@ -43,20 +20,24 @@
  *		zone. After Zones and Rooms, Items are loaded which may be lying about the rooms. Then
  *		the Mobs are loaded which exist within a room in a zone and which may have Items in their
  *		Inventory. This is the initial load. 
- *	
- *	Author			- Nicholas Warner
- *	Created			- 4/24/2015
- *	Last Updated	- 5/1/2015
+ *</pre>
+ * @author Nicholas Warner
+ * @version 5.1, May 2015
+ * @see Player
+ * @see ManageSocketConnections
+ * @see World
+ * @see Item
+ * @see Room
+ * @see Seed
+ * @see Config
  */
-
-// Import necessary packages, classes, and interfaces
-import java.net.*;
-import java.io.*;
-import java.util.Scanner;
-
 public class GameServer {
 
-	// main method
+	/** 
+	 * The main method for JavaWorld. 
+	 *
+	 * @param args Command line arguments passed to the program when first started.
+	 */
 	public static void main(String[] args) {
 
 		// Keyboard input for dynamic settings (Admin etc)

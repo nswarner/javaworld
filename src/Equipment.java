@@ -1,36 +1,29 @@
 /** 
+ *<pre>
  * Purpose
  *		
  *		The Equipment class holds a list of all the equipment a given character has equipped at
  *		any time. It also has methods to manage equipping, removing, and displaying the given
  *		equipped items (with an ASCII art drawing of a warrior).
  *		
- * Algorithm
- *		
- *		1. Declare the Equipment class
- *		2. Declare an array to hold the equipment in specific slots
- *		3. Declare a default constructor which initializes the array to null
- *		4. Declare a method to unequip and equip items
- *		5. Declare a method to test whether an item is equipped or not
- *		6. Declare a method to unequip an item
- *		7. Declare a method to display a character
- *		
  * Structure / Process
  *		
  *		The Equipment class is instantiated as a part of the Player class. It's modified through
  *		the player class.
- *		
- *	Author			- Nicholas Warner
- *	Created			- 4/24/2015
- *	Last Updated	- 5/1/2015
+ *</pre>		
+ * @author Nicholas Warner
+ * @version 5.1, May 2015
+ * @see Item
+ * @see ItemDescription
+ * @see Player
+ * @see Inventory
  */
-
 public class Equipment {
 
-	// Declare an array to hold slots of gear
+	/** An array to hold slots of gear */
 	private Item[] equippedGear;
 
-	// Declare a default constructor to intiialize our array to null
+	/** A default constructor to intiialize the equippedGear array to null */
     public Equipment() {
 
 		// One slot for each wear location
@@ -42,7 +35,13 @@ public class Equipment {
 		}
     }
     
-    // A method which equips the given item
+    /** 
+	 * A method which equips the given item onto the player.
+	 *
+	 * @param oneItem A given item to equip onto a player
+	 * @return A String which states the item was equipped (and if another was
+	 *			removed.
+	 */
     public String equipItem(Item oneItem) {
     	
     	// Make sure we send the player something useful, did they succeed or fail?
@@ -70,7 +69,12 @@ public class Equipment {
     	return output;
     }
     
-    // A method which tests whether an item is equipped or not
+    /** A method which tests whether an item is equipped or not.
+	 *
+	 * @param oneItem The given item to test to see if it is equipped.
+	 * @return A true or false boolean value indicating whether the item is or is not
+	 *			equipped.
+	 */
     public boolean isEquipped(Item oneItem) {
     	
     	// Tests if it's equipped in any slot (unnecessary, but intended for future use)
@@ -88,7 +92,13 @@ public class Equipment {
     	return false;
     }
     
-    // A method which removes an item from a player's Equipment
+    /** 
+	 * A method which removes an item from a player's Equipment
+	 *
+	 * @param oneItem The given item to remove from equipment.
+	 * @return Returns a String which indicates whether the item was successfully
+	 *			removed or not.
+	 */
     public String unequipItem(Item oneItem) {
     	
     	// Output for the player
@@ -117,7 +127,13 @@ public class Equipment {
     	return output;
     }
 
-	// A method which displays all of the currently equipped gear    
+	/**
+	 * A method which displays all of the currently equipped gear.
+	 *
+	 * @return A String divided into two columns; the left column contains an
+	 *			ascii warrior wearing the given equipment while the right
+	 *			column contains a list of body locations and equipped items.
+	 */
     public String displayEquipment() {
     	
     	// Output for the player
@@ -147,7 +163,7 @@ public class Equipment {
     		}
     	}
 
-		// ... Credit to b'ger, see "credits" for more information.    	
+		// ... Credit for the image to b'ger; see "credits" for more information.    	
     	output += gearColor[1] + "         __     __#n\n\r";
     	output += gearColor[1] + "        / < ___ > \\#n\n\r";
     	output += gearColor[1] + "        '-._____.-'#n\n\r";
@@ -183,7 +199,11 @@ public class Equipment {
 		return output;    	
     }
     
-    // toString Method
+    /** 
+	 * A method which returns a String representing this Object.
+	 *
+	 * @return A String with a listing of equipped items.
+	 */
     public String toString() {
     	
     	int c = 0;
@@ -199,7 +219,12 @@ public class Equipment {
     	return "Class: Equipment\nNumber of Worn Items: " + c;
     }
     
-    // equals Method
+    /**
+	 * A method to test whether a given set of equipment is equal to this Equipment Object.
+	 *
+	 * @param oneEquipment The given Equipment Object to test for equality
+	 * @return A true or false boolean value indicating equality or inequality.
+	 */
     public boolean equals(Equipment oneEquipment) {
     	
     	if (toString().equals(oneEquipment)) {
