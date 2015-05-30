@@ -1,4 +1,5 @@
-/* Purpose
+/**
+ * Purpose
  *		
  *		The Config class holds configuration information for JavaWorld. Examples
  *		include the PORT, the adminName, the seedFile, ... The Config class also
