@@ -1,4 +1,5 @@
-/*	Purpose
+/**
+ *	Purpose
  *
  *		The Inventory class contains a list of all the Items that a player has at the moment with
  *		the exception of Items currently equipped. The Inventory class also allows the Player to

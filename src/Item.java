@@ -1,4 +1,5 @@
-/*	Purpose
+/**
+ *	Purpose
  *
  *		The Item class represents a single item or tangible object within JavaWorld. These items
  *		currently are meant to be worn on the player's body.

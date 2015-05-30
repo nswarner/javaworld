@@ -1,4 +1,5 @@
-/*	Purpose
+/**
+ *	Purpose
  *
  *		The GameServer class houses the initialization and core processes of JavaWorld. The first
  *		steps include initializing the server for incoming network connections. The next steps

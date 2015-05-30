@@ -1,4 +1,5 @@
-/*	Purpose
+/**
+ *	Purpose
  *
  *		The Player class is a model which simulates a fictional person in JavaWorld. This
  *		Player-Character (PC) interacts with Items, Mob-AI, Weather patterns, and moves

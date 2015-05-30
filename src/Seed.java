@@ -1,4 +1,5 @@
-/*	Purpose
+/**
+ *	Purpose
  *		
  *		JavaWorld allows for randomly generating different rooms and sections of the world. To
  *		allow for the admin to maintain a persistent world, we create a seed file with a large

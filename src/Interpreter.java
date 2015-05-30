@@ -1,4 +1,5 @@
-/*	Purpose
+/**
+ *	Purpose
  *
  *		This class inteprets a player's command input and assigns that input to a given method. All
  *		of the commands which a player can use are listed in this class and some may be called

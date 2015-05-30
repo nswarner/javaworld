@@ -1,4 +1,5 @@
-/*	Purpose
+/**
+ *	Purpose
  *
  *		The ToolKit class holds methods which are useful but don't necessarily have a spot in
  *		other classes. 

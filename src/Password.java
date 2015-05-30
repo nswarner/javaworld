@@ -1,4 +1,5 @@
-/* Purpose
+/**
+ * Purpose
  *		
  *		The Password class is meant to hold the password of a player and their profile separate
  *		from the Player itself. This helps ensure the password is not "floating around" and is

@@ -1,90 +1,125 @@
-/**
- * Purpose
- *		
- *		The Config class holds configuration information for JavaWorld. Examples
- *		include the PORT, the adminName, the seedFile, ... The Config class also
- *		has methods to load the default configuration file and prompt to change
- *		the admin name.
- *		
- * Algorithm
- *		
- *		1. Declare the Config class
- *		2. Import the necessary classes, packages, interfaces, ...
- *		3. Declare a constant String to hold the Config file name
- *		4. Declare a constant int to hold the game port
- *		5. Declare Strings to hold the admin name and seed file name
- *		6. Declare a method to load the default config file
- *			- Try to open the file via Scanner object
- *			- Read in any comments; the first real String is the admin name
- *			- Read in any comments; the second real String is the seed file name
- *			- Close the file
- *			- Notify the admin what's been read in, set, and that the method was
- *				successful
- *		7. Declare a method to return the admin name
- *		8. Declare a method to set the admin name
- *		9. Declare a method to get the seed file name
- *		10. Declare a method to prompt the admin for JavaWorld's admin name
- *		
- * Structure / Process
- *		
- *		The Config class is used during the initial GameServer startup to offer
- *		the port, the admin name, and any other configuration values. The Config
- *		class may be used outside of the GameServer startup if needed.
- *		
- *	Author			- Nicholas Warner
- *	Created			- 4/24/2015
- *	Last Updated	- 5/1/2015
- */
- 
- // Import the necessary packages, classes, interfaces, ...
+// Import the necessary packages, classes, interfaces, ...
 import java.io.*;
 import java.util.Scanner;
 import java.util.ArrayList;
 
-public class Config {
+/**
+ * <pre>
+ * Purpose
+ *
+ * 	The Config class holds configuration information for JavaWorld. Examples
+ *	include the PORT, the adminName, the seedFile, ... The Config class also
+ *	has methods to load the default configuration file and prompt to change
+ *	the admin name.
+ *
+ * Structure / Process
+ * 
+ *	The Config class is used during the initial GameServer startup to offer 
+ *	the port, the admin name, and any other configuration values. The Config 
+ *	class may be used outside of the GameServer startup if needed. This class 
+ *	is declared as final with a private constructor. This infers that this 
+ *	class is meant to be used in a static context and never meant to be 
+ *	instantiated.
+ * </pre>
+ * @author Nicholas Warner
+ * @version 5.1, May 2015
+ * @see GameServer
+ */
+public final class Config {
 
-	// Constant String indicating main configuration file
+	/** Constant String indicating main configuration file */
 	private static final String CONFIG_FILE	= "../config/main.cfg";
 
-	// Port to listen to for socket connections
+	/** Port to listen to for socket connections */
 	public static final int PORT		= 5002;
 
-	// Administrator Name
+	/** Administrator Name */
 	private static String adminName 	= "";
-	// seedFile for loading the pseudo-random generator
+	/** seedFile for loading the pseudo-random generator */
 	private static String seedFile		= Seed.DEFAULT_SEED_FILE;
-	// Message of the Day (MOTD) / Login Greeting
+	/** Message of the Day (MOTD) / Login Greeting */
 	private static String motd			= "";
 
+	/**
+	 * Boolean which controls whether the game is loading with a new seed file
+	 * or a previous seed file. This is important as the world is static when
+	 * the seed file remains unchanged, which allows the characters to keep
+	 * their discovered map. When the seed file is changed, the world's dynamic
+	 * creation algorithm is called into action rebuilding a new world for the
+	 * given seed file.
+	 */
 	private static boolean newSeedFile	= false;
 
-    // Accessor Methods
+	/**
+	 * This class is meant to be uninstantiable. Each method and field are
+	 * declared static. By making the constructor private, we ensure that
+	 * this class cannot be instantiated.
+	 */
+	private Config() {
+
+		/*	
+		 *	Strictly forces the class to never be instantiated, even if called
+		 *	from within the class itself.
+		 */
+		throw new AssertionError();
+	}
+
+    /** 
+	 * Method to get the current Administrator's name.
+	 *
+	 * @return Administrator's name as a String.
+	 */
     public static String getAdmin() {
     	
     	return adminName;
     }
     
+	/**
+	 * Method to get the seed file's name.
+	 *
+	 * @return Seed File's name.
+	 */
     public static String getSeedFileName() {
     	
     	return seedFile;
     }
 
+	/**
+	 * Method to get the Message of the Day (MOTD)
+	 *
+	 * @return The MOTD.
+	 */
 	public static String getMOTD() {
 		
 		return motd;
 	}
 
+	/**
+	 * Method to get whether the seed file has changed or not
+	 *
+	 * @return the newSeedFile boolean value
+	 */
 	public static boolean getNewSeedFile() {
 		
 		return newSeedFile;
 	}
 
-	// Mutator Methods    
+	/**
+	 * Method to set the name of the Administrator once the game is running.
+	 *
+	 * @param admin A String which represents the new Administrator's name
+	 */
     public static void setAdmin(String admin) {
     	
     	adminName = admin;
     }
-    
+
+	/**
+	 * Method to set whether a new seed file has been generated or not
+	 *
+	 * @param updateRooms A boolean which indicates whether a new seed file
+	 *					  is loaded or not.
+	 */
     public static void setNewSeedFile(boolean updateRooms) {
     	
     	newSeedFile = updateRooms;
@@ -92,7 +127,12 @@ public class Config {
     
 	// Config Methods
 
-	// Method to load the default configuration file
+	/** 
+	 * Method to load the default configuration file. This file is loaded
+	 * from the CONFIG_FILE constant.
+	 *
+	 * @see #CONFIG_FILE
+	 */
     public static void loadDefaultFile() {
     	
     	// Temporary holds one line of the MOTD when read in from file
@@ -139,13 +179,14 @@ public class Config {
 		catch (IOException e) {
 			
 			// Notify the admin why we're exiting
-			System.out.println("Issue when loading config file. Msg: " + e.getMessage());
+			System.out.println("Issue when loading config file. Msg: " + 
+								e.getMessage());
 			System.out.println("Exiting...");
 			System.exit(0);
 		}    	
     }
     
-    // Method to prompt for a new Admin if needed
+    /** Method to prompt for a new Admin if needed. */
     public static void promptForAdmin() {
     	
     	// Declare an object for keyboard input
@@ -162,22 +203,5 @@ public class Config {
 		
 		// Notify the game admin that the admin name has been set
 		System.out.println("Admin set to: " + adminName);
-    }
-    
-    // toString Method
-    public String toString() {
-    	
-    	return "Class: Config";
-    }
-    
-    // equals Method
-    public boolean equals(Config oneConfig) {
-    	
-    	if (toString().equals(oneConfig.toString())) {
-    		
-    		return true;
-    	}
-    	
-    	return false;
     }
 }

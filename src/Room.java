@@ -1,4 +1,5 @@
-/*	Purpose
+/**
+ *	Purpose
  *
  *		The Room class is a representation of a single unit of 2D space. Any number of players
  *		can occupy this unit of space. Rooms can be of multiple environmental types like caves,

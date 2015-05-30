@@ -1,35 +1,31 @@
-/* Purpose
+/**
+ *<pre>
+ * Purpose
  *		
- *		The Coordinate class allows for an object to represent a point on the (x, y) plane of
- *		JavaWorld. This makes it easy to pass around a room location, item location, or player
- *		location, instead of having to pass two separate integers.
- *		
- * Algorithm
- *		
- *		1. Declare the Coordinate class
- *		2. Declare two ints to represent the X and Y coordinates respectively
- *		3. Create a default constructor and a parameterized constructor
- *		4. Create accessor and mutator methods for both variables
- *		5. Create a toString method
- *		6. Create an equals method
+ *	The Coordinate class allows for an object to represent a point on the 
+ *	(x, y) plane of JavaWorld. This makes it easy to pass around a room 
+ *	location, item location, or player location, instead of having to pass two 
+ *	separate integers.
  *		
  * Structure / Process
  *		
- *		The Coordinate class is used within JavaWorld at several locations to handle passing x
- *		and y coordinates.
- *		
- *	Author			- Nicholas Warner
- *	Created			- 4/24/2015
- *	Last Updated	- 5/1/2015
+ *	The Coordinate class is used within JavaWorld at several locations to 
+ *	handle passing x and y coordinates.
+ *</pre>		
+ * @author Nicholas Warner
+ * @version 5.1, May 2015
  */
- 
 public class Coordinate {
 
-	// Declare our variables
+	/** Holds the X coordinate value. */
 	private int coordX;
+	/** Holds the Y coordinate value. */
 	private int coordY;
 
-	// Declare our default constructor
+	/**
+	 * Default constructor for the Coordinate class. X and Y are initialized
+	 * to -1.
+	 */
 	public Coordinate() {
     
     	// Set them to values which are null-equivalent for a positive (x, y) plane
@@ -37,44 +33,78 @@ public class Coordinate {
     	coordY = -1;
     }
 
-	// Declare our parameterized constructor
+	/**
+	 * Parameterized constructor for the Coordinate class. X and Y are
+	 * initialized to the given arguments.
+	 *
+	 * @param x Initializes the coordX field.
+	 * @param y Initializes the coordY field.
+	 */
     public Coordinate(int x, int y) {
     	
     	coordX = x;
     	coordY = y;
     }
 
-	// Accessor Methods
+	/** 
+	 * Method to return the value of the X coordinate.
+	 * 
+	 * @return The value of the coordX field.
+	 */
     public int getCoordX() {
     	
     	return coordX;
     }
     
+	/** 
+	 * Method to return the value of the Y coordinate.
+	 *
+	 * @return The value of the coordY field.
+	 */
     public int getCoordY() {
     	
     	return coordY;
     }
 
-	// Mutator Methods
+	/**
+	 * Method to set the value of the X coordinate.
+	 *
+	 * @param x Sets the value of the coordX field.
+	 */
     public void setCoordinateX(int x) {
     	
     	coordX = x;
     }
     
+	/**
+	 * Method to set the value of the Y coordinate.
+	 *
+	 * @param y Sets the value of the coordY field.
+	 */
     public void setCoordinateY(int y) {
     	
     	coordY = y;
     }    
     
-    // toString Method
+    /**
+	 * Method which returns the given Object's coordinate values.
+	 *
+	 * @return A String representing the class and its (coordX, coordY) fields.
+	 */
     public String toString() {
     	
     	return "Class: Coordinate\nCoordX: " + coordX + "\nCoordY: " + coordY;
     }
     
-    // equals Method
+    /**
+	 * Method which tests whether two given Coordinate Objects are equal.
+	 * 
+	 * @param oneCoordinate A Coordinate object to test against this.
+	 * @return A boolean value indicating whether the objects are equal.
+	 */
     public boolean equals(Coordinate oneCoordinate) {
-    	
+
+		// This is a fairly lazy way, but it does ensure accuracy
     	if (toString().equals(oneCoordinate.toString())) {
     		
     		return true;

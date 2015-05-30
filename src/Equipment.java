@@ -1,4 +1,5 @@
-/* Purpose
+/** 
+ * Purpose
  *		
  *		The Equipment class holds a list of all the equipment a given character has equipped at
  *		any time. It also has methods to manage equipping, removing, and displaying the given

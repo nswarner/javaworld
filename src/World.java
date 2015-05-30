@@ -1,4 +1,5 @@
-/*	Purpose
+/**
+ *	Purpose
  *
  *		The World is a class that constitutes the overall physcial JavaWorld game. It contains a
  *		list of all rooms, and is part of the initial startup for loading rooms and generating

@@ -1,4 +1,5 @@
-/*	Purpose
+/**
+ *	Purpose
  *
  *		The ManageSocketConnections class is meant to be a separate running thread from the
  *		main game thread. It accepts incoming connections and spawns a copy of itself when it's

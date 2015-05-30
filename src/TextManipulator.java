@@ -1,4 +1,5 @@
-/* Purpose
+/**
+ * Purpose
  *		
  *		This class manipulates Strings in different ways as needed. Also handles ANSI color codes.
  *		

@@ -1,4 +1,5 @@
-/* Purpose
+/** 
+ * Purpose
  *		
  *		The Hangman class represents the Hangman minigame available within
  *		the main game. A player types "hangman <start / status / play [letter]>"

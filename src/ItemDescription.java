@@ -1,4 +1,5 @@
-/* Purpose
+/**
+ * Purpose
  *		
  *		This class holds the collection of item characteristics. Think of it as the bulk of what
  *		an item actually is, as opposed to the Item class which holds location information and
