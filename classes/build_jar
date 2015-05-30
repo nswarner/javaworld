@@ -1,0 +1,4 @@
+echo -e "Main-Class: GameServer\n" > ./META-INF/MANIFEST.MF
+jar -cmvf ./META-INF/MANIFEST.MF ../bin/JavaWorld.jar ./*
+chmod +x ../bin/JavaWorld.jar
+rm ./META-INF/MANIFEST.MF

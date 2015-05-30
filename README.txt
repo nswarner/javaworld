@@ -1,9 +1,46 @@
 README for JavaWorld
 
-Welcome! Thank you for loading JavaWorld. In order to play JavaWorld, you'll need
-a telnet client; if you're unfamiliar with this, I recommend downloading putty. You
-can find putty at http://the.earth.li/~sgtatham/putty/latest/x86/putty.exe which
-is the original author's website.
+/---------------------------------------------------------------------------\
+|																			|
+|	Author: Nicholas Stephen Warner											|
+|	Email: nswarner2@gmail.com												|
+|	Created: May 2015														|
+|	Purpose: Created for a final project in my second semester Java class.	|
+|				Also submitted to my college's annual programming			|
+|				competition. JavaWorld won first prize.						|
+|																			|
+\---------------------------------------------------------------------------/
+
+Table of Contents
+
+	Section 1 - Welcome
+	Section 2 - How do I play JavaWorld? (See NOTE)
+	Section 3 - What can I do in JavaWorld?
+	Section 4 - Can I also use this? Yes!
+
+--------------------------------------------------------------------------------
+
+Section 1 - Welcome
+
+Thank you for loading JavaWorld. In order to play JavaWorld, you'll need a telnet
+client; if you're unfamiliar with this, I recommend downloading putty. You can 
+find putty at http://the.earth.li/~sgtatham/putty/latest/x86/putty.exe which is 
+the original author's website.
+
+--------------------------------------------------------------------------------
+
+Section 2 - How do I play JavaWorld?
+
+====================================
+
+NOTE: This section assumes that you are familiar with Java and are able to build
+a given project from source files. This project was originally created using
+JCreator and therefore has the project layout and workspace / project files
+associated with JCreator. After the initial project was created, most of the
+future developments were added via a mix of IDEs, therefore, you may build this 
+project via command line from the ./src/ folder using the build.php script.
+
+====================================
 
 Once you've built and started the game, (you'll need to press 'n' in the console
 window when it first starts for the game to run; see P.P.S. for more information)
@@ -24,7 +61,11 @@ you type in a name, you'll be prompted for a password. While the passwords are
 serialized separately from the player's profile, and therefore not stored in
 plain text, I still recommend using a temporary or throw-away password. Encryption
 was not part of our course curriculum, therefore, serializing the password String
-was the best I could do. :-)
+was the best I was allowed to use.
+
+--------------------------------------------------------------------------------
+
+Section 3 - What can I do in JavaWorld?
 
 After typing your password in twice, you'll be loaded into the Game. You'll start
 at the HOMELOCATION, (100, 100). This game is setup on an (x, y) plane, where
@@ -61,12 +102,20 @@ may adventure around JavaWorld with you finding items, exploring the map, and
 chatting with you. Meanwhile, you may customize your adventurer's title, set
 of equipment, and name. If you'd like to save your profile, simply type save!
 
+--------------------------------------------------------------------------------
+
+Section 4 - Can I also use this? Yes!
+
 Finally, the underlying structure of the game, in Java source files, is very
 well documented and thoroughly explained. If you get the inkling to extend
 this game for your own means, go for it! All I ask is that in the old MUD
 fashion, you send a quick email over to me: nswarner2@gmail.com
 
 Thank you and have fun inside JavaWorld!
+
+--------------------------------------------------------------------------------
+
+Section 5 - All the PostScript Notes
 
 P.S. I'd love to hear feedback, advice, and even positive criticisms. Feel
 free to email me with any of the above! You may also notice that the program
@@ -87,3 +136,14 @@ usually pretty good!)
 P.P.P.S. My sincerest apologies for the lackluster room names and descriptions!
 I'm not a fantastically creative person, I tend to prefer the logic of code.
 Better descriptions and names will come in the next update!
+
+--------------------------------------------------------------------------------
+
+Appendix A - TODO
+
+	1. Finish converting all of the documentation over to javadoc. 
+		- Config.java and Coordinate.java have been converted
+	2. Explore every branching statement and ensure that every case is
+		accounted for. This includes ensuring that every call to an
+		external method has been tested.
+	3. Create a build script which results in a jar file.

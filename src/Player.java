@@ -586,6 +586,8 @@ public class Player {
 				int roomY = 0;
 				boolean keepGoing = true;
 	
+				playerName = playerName.toLowerCase();
+
 				fileIn = new Scanner(new File("../player/" + playerName + ".discoveredRooms"));
 	
 				while(keepGoing) {
