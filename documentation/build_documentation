@@ -1,0 +1,3 @@
+cd ../src/
+javadoc -d ../documentation/ Config.java Coordinate.java Equipment.java GameServer.java
+cd ../documentation/
