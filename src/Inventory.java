@@ -1,78 +1,82 @@
+import java.util.*;
+import java.io.*;
+
 /**
+ *<pre>
  *	Purpose
  *
  *		The Inventory class contains a list of all the Items that a player has at the moment with
  *		the exception of Items currently equipped. The Inventory class also allows the Player to
  *		manage the Items in their inventory by dropping them or picking up more.
  *
- *	Algorithm
- *
- *		1. Declare the Inventory class
- *		2. Import the necessary packages (IO and Util)
- *		3. Declare a LinkedList for our Items to represent an Inventory
- *		4. Declare a boolean to indiate whether it's a room or not
- *		5. Declare a default constructor
- *		6. Declare a paramterized constructor
- *		7. Declare mutator methods
- *		8. Declare a method to display the inventory (room or player)
- *		9. Declare methods to test whether the inventory contains an Item in
- *			- Inventory
- *			- Equipped
- *			- Or both
- *		10. Declare a method to save the inventory to a flat file
- *		11. Declare a method to load the inventory from the flat file
- *		12. Declare a toString method
- *		13. Declare an equals method
- *
  *	Structure / Process
  *
  *		The Inventory class is instantiated as a part of the Player class. It's modified through
  *		the player class.
- *
- *	Author			- Nicholas Warner
- *	Created 		- 4/24/2015
- *	Last Updated	- 5/1/2015
+ *</pre>
+ * @author Nicholas Warner
+ * @version 5.1, May 2015
+ * @see Player
+ * @see Room
+ * @see Item
  */
-
-// Import our packages
-import java.util.*;
-import java.io.*;
-
-// Declare the class
 public class Inventory {
 
-	// Since we're randomly removing and adding items, a LinkedList seems good
+	/**
+	 * Since we're randomly removing and adding items, a LinkedList seems like the appropriate
+	 * list type. This list contains the given items in the Inventory.
+	 */
 	private LinkedList<Item> itemList;
-	// Rooms have different display-Inventorys than Players
+	/** A boolean meant to indicate whether the Inventory belongs to a room or player. */
 	private boolean isARoom;
 
-	// Our default constructor
+	/** A default constructor initializing the itemList LinkedList; assumes isARoom is false. */
 	public Inventory() {
 		
 		itemList = new LinkedList<Item>();
 		isARoom = false;
 	}
 
-	// Our paramterized Constructor
+	/**
+	 * A parameterized constructor; initializes the itemList LinkedList and accepts a boolean
+	 * to indicate whether this is a Room or Player.
+	 *
+	 * @param isARoom A boolean determining whether this Inventory is a Room or not.
+	 */
     public Inventory(boolean isARoom) {
 
 		itemList = new LinkedList<Item>();
 		this.isARoom = isARoom;
     }
 
-	// Mutator Methods    
+	/**
+	 * A method to add a given Item to this Inventory onto its itemList LinkedList.
+	 *
+	 * @param oneItem The given Item to add to the itemList.
+	 */ 
     public void addToInventory(Item oneItem) {
     	
     	itemList.add(oneItem);
     }
     
+	/**
+	 * A method to remove a given item from this Inventory's itemList LinkedList.
+	 *
+	 * @param oneItem The given Item to remove from the itemList.
+	 * @return Returns a String indicating that the item was dropped from Inventory.
+	 */
     public String removeFromInventory(Item oneItem) {
     	
     	itemList.remove(oneItem);
     	return oneItem.getName() + " was dropped from inventory.\n\r";
     }
 
-	// Inventory Methods    
+	/**
+	 * A method meant to display the Inventory by returning it as a String.
+	 *
+	 * @param isARoom A boolean determinig whether this Inventory is a Room or not.
+	 * @return Returns a String containing the Inventory of this Object.
+	 */ 
     public String displayInventory(boolean isARoom) {
     	
     	// To hold the output as we build it
@@ -123,7 +127,12 @@ public class Inventory {
 		return output;
     }
     
-    // A method to test whether the Inventory contains an item of a given name
+    /**
+	 * A method to test whether the Inventory contains an Item of a given name.
+	 *
+	 * @param itemName The given Item's name that is searched for in the itemList.
+	 * @return Returns the given Item being searched for, or null if not found.
+	 */
     public Item contains(String itemName) {
     	
     	// Lower case it
@@ -144,7 +153,14 @@ public class Inventory {
     	return null;
     }
 
-	// Same as contains, but we ignore when it's in the Inventory and not equipped
+	/**
+	 * A method testing whether a given String itemName is found within the itemList
+	 * and whether the Item itself is equipped or not.
+	 *
+	 * @param itemName The given name of the Item we're searching for.
+	 * @return Returns an Item of the given name if equipped, or null if not found or
+	 *			if not equipped.
+	 */
     public Item containsInEquipment(String itemName) {
     	
     	itemName = itemName.toLowerCase();
@@ -163,7 +179,13 @@ public class Inventory {
     	return null;
     }
     
-	// Same as contains, but we ignore when it's equipped and not in the inventory
+	/**
+	 * A method which returns an Item by a given String itemName if it's contained
+	 * within this Inventory.
+	 *
+	 * @param itemName The name of the given Item being searched for.
+	 * @return Returns the Item if found in this Inventory, otherwise returns null.
+	 */
     public Item containsInInventory(String itemName) {
     	
     	itemName = itemName.toLowerCase();
@@ -182,7 +204,11 @@ public class Inventory {
     	return null;
     }
     
-    // A method used to save the Inventory to a file
+    /**
+	 * A method used to save this Inventory to a file.
+	 *
+	 * @param playerName The name of the Player to which the Inventory is owned.
+	 */
     public void saveInventory(String playerName) {
     	
     	// We use PrintWriter for file output
@@ -231,7 +257,12 @@ public class Inventory {
     	}
     }
     
-    // Load up the Inventory from a save file
+    /**
+	 * A method to load up the Inventory of a given playerName from a save file.
+	 *
+	 * @param playerName A String meant to contain the name of the player who's
+	 *						Inventory is being loaded.
+	 */
     public void loadInventory(String playerName) {
     	
     	// Scanner for reading fileIn
@@ -327,13 +358,23 @@ public class Inventory {
     	}
     }
 
-    // Our toString method
+    /**
+	 * A method to display this Inventory as a String.
+	 *
+	 * @return Returns a String containing the Inventory's list of Items.
+	 */
     public String toString() {
     	
     	return "Class: Inventory\nInventory Size: " + itemList.size();
     }
     
-    // Our equals method
+    /**
+	 * A method meant to test whether a given Inventory is equivalent to this Inventory.
+	 *
+	 * @param oneInventory The given Inventory to compare against this Inventory.
+	 * @return A boolean returned; if the Inventorys are equal, return true, else
+	 *			return false.
+	 */
     public boolean equals(Inventory oneInventory) {
     	
     	if (oneInventory.toString().equals(toString())) {
