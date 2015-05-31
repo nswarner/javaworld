@@ -1,26 +1,14 @@
+import java.io.*;
+import java.net.*;
+
 /**
+ *<pre>
  *	Purpose
  *
  *		The ManageSocketConnections class is meant to be a separate running thread from the
  *		main game thread. It accepts incoming connections and spawns a copy of itself when it's
  *		busy. It dies after it's accepted a single connection, but the copy, and by extension,
  *		its own copy (and the next copy, etc), lives on.
- *
- *	Algorithm
- *
- *		1. Declare the ManageSocketConnections class
- *		2. Import the necessary packages from IO and Net (files and sockets)
- *		3. Ensure our class implements Runnable
- *		4. Create a default constructor
- *		5. Create a paramterized constructor which accepts a Server Socket
- *		6. Create the run method
- *			- Accept a connection
- *			- Spawn a thread
- *			- Validate password credentials as needed
- *			- Setup either a new Player or load an existing player
- *		7. Create methods to get the player's name, their old password, or a new password
- *		8. Create a toString method
- *		9. Create an equals method
  *
  *	Structure / Process
  *
@@ -29,35 +17,47 @@
  *		spawned which awaits the next connection while the first thread finishes up with the
  *		first player connected. The second thread in essence becomes the first thread, and will
  *		spawn its secondary thread once it accepts a connection.
- *
- *	Author			- Nicholas Warner
- *	Created 		- 4/24/2015
- *	Last Updated	- 5/1/2015
+ *</pre>
+ * @author Nicholas Warner
+ * @version 5.1, May 2015
+ * @see GameServer
  */
-
-// Import packages for file IO and Socket Networking
-import java.io.*;
-import java.net.*;
-
-// Declare the class
 public class ManageSocketConnections implements Runnable {
 
-	// Declare our ServerSocket object
+	/** A ServerSocket Object which is a reference to the GameServer's ServerSocket. */
 	ServerSocket server;
 
-	// Default constructor
+	/** A default constructor which sets the server field to null. */
 	public ManageSocketConnections() {
 		
 		this.server = null;
 	}
 
-	// Paramterized constructor with an isntantiated Server Socket
+	/** 
+	 * A Paramterized constructor with an isntantiated Server Socket reference.
+	 *
+	 * @param server A reference to the primary ServerSocket accepting incoming connections.
+	 */
 	public ManageSocketConnections(ServerSocket server) {
 		
 		this.server = server;
 	}
 
-	// The core of the Thread is the run method
+	/** 
+	 * The core of the Thread is the run method. This method blocks, waiting for
+	 * a new Socket connection from the referenced ServerSocket. Once the Socket
+	 * connection is accepted, a new Object of the ManagedSocketConnections class
+	 * is spawned to wait for the next connection. In this run method, after
+	 * spawning the new thread, the Socket's input and output is established, 
+	 * the method requests a name and then attempts to either load the Player if
+	 * the Socket provides the appropriate Password, or, if the Player does not
+	 * exist, the method attempts to create a new Player. This method is
+	 * thread-safe and heavily commented; read on for more information.
+	 *
+	 * @see Player
+	 * @see Config#getNewSeedFile()
+	 * @see Interpreter#checkCommand(Player, String)
+	 */
 	public void run() {
 		
 		// We'll take one Socket connection
@@ -234,7 +234,15 @@ public class ManageSocketConnections implements Runnable {
 		System.out.println("Added one Player: " + newPlayer.getName());		
 	}
 	
-	// A method which gets the player's name
+	/**
+	 * A method which gets the player's name from a given Socket's input.
+	 *
+	 * @param msgOut The output stream to send a message to the given Player.
+	 * @param msgIn The input stream to receive a message from the given Player.
+	 * @param newPlayer The given Player who's sending and receiving messages.
+	 * @return Returns a boolean value or true if the method successfully gets
+	 *			the new Player's name and false if the name is unwanted.
+	 */
 	private boolean getPlayerName(PrintWriter msgOut, BufferedReader msgIn, 
 								  Player newPlayer) {
 
@@ -304,8 +312,14 @@ public class ManageSocketConnections implements Runnable {
 		return false;
 	}
 
-	// A method to request a password
-	private boolean getPlayerPassword(PrintWriter msgOut, BufferedReader msgIn, 
+	/** 
+	 * A method to request a password for a new Player.
+	 *
+	 * @param msgOut The output stream for the given Player.
+	 * @param msgIn The input stream from the given Player.
+	 * @param newPlayer The given Player who the Streams are associated to.
+	 */
+	private void getPlayerPassword(PrintWriter msgOut, BufferedReader msgIn, 
 									  Player newPlayer) {
 
 		// The password being input
@@ -330,12 +344,17 @@ public class ManageSocketConnections implements Runnable {
 		
 		// We have a password! Set it up!
 		newPlayer.setPassword(tempPassword);
-		
-		// Good to go
-		return true;
 	}	
 
-	// Let's prompt a new player for their password twice
+	/** 
+	 * A method to prompt a new player for their password twice.
+	 *
+	 * @param msgOut The output stream for the given Player.
+	 * @param msgIn The input stream for the given Player.
+	 * @param newPlayer The given Player.
+	 * @return A boolean value of true if the passwords match and a boolean value
+	 *			value of false if the passwords do not match.
+	 */
 	private boolean getNewPlayerPassword(PrintWriter msgOut, BufferedReader msgIn, 
 									  Player newPlayer) {
 
@@ -394,13 +413,23 @@ public class ManageSocketConnections implements Runnable {
 		return false;
 	}	
 	
-	// toString method
+	/** 
+	 * A method to put the class name. 
+	 *
+	 * @return Returns a String indicating the class's name.
+	 */
 	public String toString() {
 		
 		return "Class: ManageSocketConnections";
 	}
 	
-	// equals method
+	/** 
+	 * A method to test whether a given ManageSocketConnections Object is equivalent
+	 * to this Object.
+	 *
+	 * @param msg The given ManageSocketConnections Object we're testing against.
+	 * @return Returns a boolean value of true if they're equal, false if they're not.
+	 */
 	public boolean equals(ManageSocketConnections msg) {
 		
 		if (toString().equals(msg.toString())) {
