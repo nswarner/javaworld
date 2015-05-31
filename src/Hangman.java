@@ -1,28 +1,10 @@
 /** 
+ *<pre>
  * Purpose
  *		
  *		The Hangman class represents the Hangman minigame available within
  *		the main game. A player types "hangman <start / status / play [letter]>"
  *		to participate in the game of hangman.
- *		
- * Algorithm
- *		
- *		1. Declare the Hangman class
- *		2. Declare a String to hold the mystery word
- *		3. Declare a boolean array 26 letters in length to represent the
- *			characters already used in the current game
- *		4. Declare a boolean to indicate when a game has ended and a new game
- *			can be started again
- *		5. Declare an int to represent the number wrong (number of lives used)
- *		6. Default constructor supplied by Java
- *		7. Create a static method to begin a new game
- *		8. Create a boolean method to try a given letter
- *			- Test whether the letter is OK
- *			- Test whether the game has ended
- *		9. Create a method to test for a win
- *		10. Create a method to indicate the game has ended in a win
- *		11. Create a method to indicate the game has ended in a loss
- *		12. Create necessary accessor and mutator methods
  *		
  * Structure / Process
  *		
@@ -31,25 +13,28 @@
  *		within the Interpreter class. The Interpreter class has a commandHangman
  *		which identifies whether it's a start, play, status request, and then
  *		makes the necessary adjustments to the Hangman class (as it's static).
- *
- *	Author			- Nicholas Warner
- *	Created			- 4/24/2015
- *	Last Updated	- 5/17/2015
+ *</pre>
+ * @author Nicholas Warner
+ * @version 5.1, May 2015
  */
+public final class Hangman {
 
-// Declare our class
-public class Hangman {
-
-	// Declare a String to hold the mystery word
+	/** A String to hold the mystery word. */
 	private static String mysteryWord;
-	// Declare a boolean array to hold the used characters
+	/** A boolean array to hold the used characters. */
 	private static boolean[] charactersUsed;
-	// Declare a boolean to manage whether the game has ended or not
+	/** A boolean to manage whether the game has ended or not. */
 	private static boolean gameEnded;
-	// Declare an int to hold the number of wrong guesses
+	/** An int to hold the number of wrong guesses. */
 	private static int numWrong;
-	
-	// A method to start a new game
+
+	/** Private constructor forces an uninstantiable class. */
+	private Hangman() {
+
+		throw new AssertionError();
+	}
+
+	/** A method to start a new game. */
 	public static void newGame(String mWord) {
 		
 		// Set the new mystery word
@@ -60,7 +45,13 @@ public class Hangman {
 		numWrong = 0;
 	}
 
-	// A method to play a letter if possible	
+	/** 
+	 * A method to play a letter if possible.
+	 *
+	 * @param letter The letter being played in the mystery word
+	 * @return A true or false value indicating that the letter was either
+				allowed or not.
+	 */
 	public static boolean tryLetter(char letter) {
 	
 		// To see whether it was successful or not
@@ -114,7 +105,10 @@ public class Hangman {
 		return false;
 	}
 
-	// Test whether the mystery word has been completed from the boolean array
+	/** 
+	 * A method to test whether the mystery word has been completed from the 
+	 * boolean array.
+	 */
 	public static void testWin() {
 		
 		// Assume it has
@@ -145,7 +139,7 @@ public class Hangman {
 		}
 	}
 
-	// A method to notify the players that the game has ended in a loss
+	/** A method to notify the players that the game has ended in a loss */
 	public static void gameOverLoss() {
 		
 		// Notify via info
@@ -154,7 +148,7 @@ public class Hangman {
 		gameEnded = true;
 	}
 	
-	// A method to notify the players that the game has ended in a win
+	/** A method to notify the players that the game has ended in a win */
 	public static void gameOverWin() {
 		
 		// Notify via info
@@ -163,13 +157,21 @@ public class Hangman {
 		gameEnded = true;
 	}
 
-	// Accessor method to see how many lives lost
+	/** 
+	 * A method to see how many lives lost.
+	 *
+	 * @return Returns the value of the numWrong field
+	 */
 	public static int getWrong() {
 		
 		return numWrong;
 	}
 	
-	// String method to build the actual hangman graphic
+	/**
+	 * String method to build the actual hangman graphic.
+	 *
+	 * @return Returns a String with the current Hangman status.
+	 */
 	public static String getStatus() {
 	
 		// The String to hold the output

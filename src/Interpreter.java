@@ -1,44 +1,16 @@
+import java.io.IOException;
+
 /**
+ *<pre>
  *	Purpose
  *
  *		This class inteprets a player's command input and assigns that input to a given method. All
  *		of the commands which a player can use are listed in this class and some may be called
  *		externally (such as saving) but most are private.
  *
- *	Algorithm
- *
- *		1. Declare the Interpreter class
- *		2. Declare a String array to hold all of the commands that are available
- *		3. Declare a second String array to hold Administrative commands
- *		4. Declare a primary method which inteprets player input and assigns it a method
- *		5. Declare the following command methods:
- *			- commandNorth
- *			- commandEast
- *			- commandSouth
- *			- commandWest
- *			- commandSavePlayer
- *			- commandChat
- *			- commandName
- *			- commandLook
- *			- commandRecall
- *			- commandGet
- *			- commandDrop
- *			- commandInventory
- *			- commandRemove
- *			- commandShowEquipped
- *			- commandEquip
- *			- commandCommands
- *			- commandScore
- *			- commandWho
- *			- commandMap
- *			- commandCredits
- *			- commandTitle
- *			- commandLaugh
- *			- commandDance
- *			- commandQuit
- *			- commandItemsList
- *		6. Create a minimap Method to build a minimap of surrounding rooms
- *		7. Create a toString method and an equals method
+ *	NOTE
+ *		All commands accept a Player Object as an argument. This is because every command will send
+ *		text to the player who initiates the command.
  *
  *	Structure / Process
  *
@@ -50,18 +22,13 @@
  *		This information is then tested in the checkCommand method which is what actually pairs
  *		the input String to a command (or notifies the user they entered gibberish). Then the
  *		method is executed upon the Player and any additional arguments they may have sent.
- *
- *	Author			- Nicholas Warner
- *	Created 		- 4/24/2015
- *	Last Updated	- 5/17/2015
+ *</pre>
+ * @author Nicholas Warner
+ * @version 5.1, May 2015
  */
+public final class Interpreter {
 
-// Import the necessary classes, packages, interfaces, ...
-import java.io.IOException;
-
-public class Interpreter {
-
-	// A list of all available commands
+	/** A list of all available commands. */
 	public static final String[] commands = {
 							"chat",
 							"laugh",
@@ -88,7 +55,7 @@ public class Interpreter {
 							"hangman"
 							};
 
-	// A list of all available admin commands
+	/** A list of all available admin commands. */
 	public static final String[] adminCommands = {
 		
 							"shutdown",
@@ -98,7 +65,21 @@ public class Interpreter {
 							"info"
                             };
 
-	// Run the command and it's associated method
+	/** Private constructor ensures Interpreter cannot be instantiated. */
+	private Interpreter() {
+
+		throw new AssertionError();
+	}
+
+	/** 
+	 * A method to interpret a player's input and, after validating that it is
+	 * valid input, match the input to a command (commandMethod).
+	 *
+	 * @param player The given player who is running the command.
+	 * @param playerInput The String input that the player types in, both the
+	 *						command and any secondary arguments.
+	 * @return Returns a true or false value whether the command was valid or not.
+	 */
 	public static boolean checkCommand(Player player, String playerInput) {
 		
 		// To hold the name of the command given
@@ -230,7 +211,11 @@ public class Interpreter {
 		return foundCommand;
 	}
 
-	// List all Items in the game
+	/**
+	 * A method to list all Items which are currently loaded into the game.
+	 *
+	 * @param player The given player using the Items command.
+	 */
     private static void commandItemsList(Player player) {
 	
 		String output = Item.getItemsList();
@@ -239,7 +224,11 @@ public class Interpreter {
 					   output);
 	}
 
-	// Send the player back to the HOMELOCATION
+	/**
+	 * A method to send the player back to the HOMELOCATION, as defined in the World class.
+	 *
+	 * @param player The given player using the Recall command.
+	 */
     private static void commandRecall(Player player) {
 		
 		player.setLocation(World.HOMELOCATION, World.HOMELOCATION);
@@ -249,7 +238,12 @@ public class Interpreter {
 		commandLook(player, "", false);
 	}
 
-	// Freeze a single player so they may no longer act
+	/**
+	 * A method which freezes a single player so they may no longer act.
+	 *
+	 * @param player The given player using the Freeze command.
+	 * @param playerInput A String which contains the name of the player to be frozen.
+	 */
 	private static void commandFreeze(Player player, String playerInput) {
 		
 		String pName = TextManipulator.oneArgument(playerInput).toLowerCase();
@@ -268,7 +262,12 @@ public class Interpreter {
 		}
 	}
 
-	// Unfreeze a single payer so that may act again
+	/** 
+	 * A method which unfreezes a single payer so that may act again.
+	 *
+	 * @param player The given player using the UnFreeze command.
+	 * @param playerInput A String which contains the name of the player to be unfrozen.
+	 */
 	private static void commandUnFreeze(Player player, String playerInput) {
 		
 		String pName = TextManipulator.oneArgument(playerInput).toLowerCase();
@@ -288,7 +287,11 @@ public class Interpreter {
 
 	}
 
-	// A method to shutdown the entire game; save everyone first
+	/**
+	 * A method to shutdown the entire game; save everyone first and exits cleanly.
+	 *
+	 * @param player The given player using the Shutdown command.
+	 */
     private static void commandShutdown(Player player) {
 		
 		System.out.println("Cleaning up. Game is exiting.");
@@ -298,7 +301,11 @@ public class Interpreter {
 		System.exit(0);
 	}
 
-	// A method to quit from the game for a player (save them, then extract them)
+	/**
+	 * A method to quit from the game for a player (save them, then extract them).
+	 *
+	 * @param player The given player using the Quit command.
+	 */
     private static void commandQuit(Player player) {
 		
 		commandSavePlayer(player);
@@ -316,7 +323,11 @@ public class Interpreter {
 		player.setQuit(true);
 	}
 
-	// A method to see who is online
+	/** 
+	 * A method to see who is online at the present time.
+	 *
+	 * @param player The given player using the Who command.
+	 */
     private static void commandWho(Player player) {
 
 		String status;
@@ -330,7 +341,11 @@ public class Interpreter {
 		player.message(output);
 	}
 
-	// A method to see vital statistics about a player
+	/** 
+	 * A method to see vital statistics about a player.
+	 *
+	 * @param player The given player using the Score command.
+	 */
     private static void commandScore(Player player) {
 		
 		String output;
@@ -345,7 +360,11 @@ public class Interpreter {
 		player.message(output);
 	}
 
-	// A method to move east
+	/** 
+	 * A method to move the Player east by one coordinate value.
+	 *
+	 * @param player The given player using the East command.
+	 */
     private static void commandEast(Player player) {
 		
 		if (player.moveEast()) {
@@ -360,7 +379,11 @@ public class Interpreter {
 		}
 	}
 
-	// Moves the player West
+	/** 
+	 * A method to move the Player west by one coordinate value.
+	 *
+	 * @param player The given player using the West command.
+	 */
     private static void commandWest(Player player) {
 		
 		if (player.moveWest()) {
@@ -375,7 +398,11 @@ public class Interpreter {
 		}
 	}
 
-	// Move the player North
+	/**
+	 * A method to move the Player north by one coordinate value.
+	 *
+	 * @param player The given player using the north command.
+	 */
     private static void commandNorth(Player player) {
 		
 		if (player.moveNorth()) {
@@ -390,7 +417,11 @@ public class Interpreter {
 		}
 	}
 
-	// Move the player south
+	/** 
+	 * A method to move the player south by one coordinate value.
+	 *
+	 * @param player The given player using the south command.
+	 */
     private static void commandSouth(Player player) {
 		
 		if (player.moveSouth()) {
@@ -405,7 +436,12 @@ public class Interpreter {
 		}
 	}
 
-	// Build a minimap for the given player
+	/**
+	 * A method to build a minimap for the given player as a String.
+	 *
+	 * @param player The given player using the minimap command.
+	 * @return A built grid map of discovered rooms for the Player.
+	 */
     private static String minimap(Player player) {
 		
 		String map = "";
@@ -505,7 +541,12 @@ public class Interpreter {
 		return map;
 	}
 
-	// Begin a game of hangman
+	/**
+	 * A method to begin a game of Hangman.
+	 *
+	 * @param player The given player using the Hangman command.
+	 * @param argument The given String argument from the player.
+	 */
 	private static void commandHangman(Player player, String argument) {
 		
 		String commandType = TextManipulator.oneArgument(argument).toLowerCase();
@@ -529,7 +570,11 @@ public class Interpreter {
 		}
 	}
 
-	// Build an overhead map
+	/**
+	 * A method to build an overhead map for the Player.
+	 *
+	 * @param player The given player using the Map command.
+	 */
     private static void commandMap(Player player) {
 		
 		String map = "";
@@ -627,7 +672,12 @@ public class Interpreter {
 		player.message(map);
 	}
 
-	// List all of the available commands from the command list
+	/**
+	 * A method meant to list all of the available commands from the command list to a
+	 *	given player.
+	 *
+	 * @param player The given player using the Commands command.
+	 */
     private static void commandCommands(Player player) {
 		
 		int lineLength = 0;
@@ -670,20 +720,33 @@ public class Interpreter {
 		player.message(output + "\n\r");
 	}
 
-	// Display the player's inventory
+	/** 
+	 * A method to display the player's inventory.
+	 *
+	 * @param player The given player using the Inventory command.
+	 */
 	private static void commandInventory(Player player) {
 		
 		player.message(player.displayInventory());
 	}
 	
-	// Save the player
+	/**
+	 * A method to save the player to the flat file database.
+	 *
+	 * @param player The given player using the Save command.
+	 */
 	public static void commandSavePlayer(Player player) {
 		
 		player.message("Saving player file.\n\r");
 		Player.savePlayer(player);
 	}
 	
-	// Equip a given item
+	/**
+	 * A method to equip a given item on the player.
+	 *
+	 * @param player The given player using the Equip command.
+	 * @param oneItem The given item intended to be equipped.
+	 */
 	private static void commandEquip(Player player, String oneItem) {
 		
 		if (oneItem.length() > 0) {
@@ -702,7 +765,12 @@ public class Interpreter {
 		}				
 	}
 
-	// Remove a given item	
+	/**
+	 * A method to remove a given item from the player's equipment.
+	 *
+	 * @param player The given player using the Remove command.
+	 * @param oneItem The given Item the player is attempting to Remove.
+	 */
 	private static void commandRemove(Player player, String oneItem) {
 		
 		if (oneItem.length() > 0) {
@@ -721,7 +789,12 @@ public class Interpreter {
 		}
 	}
 
-	// Get a given item from the room's floor
+	/**
+	 * A method to get a given item from the room's floor(inventory)
+	 *
+	 * @param player The given player using the Get command.
+	 * @param oneItem The given item meant to be picked up.
+	 */
 	private static void commandGet(Player player, String oneItem) {
 		
 		if (oneItem.length() > 0) {
@@ -747,7 +820,12 @@ public class Interpreter {
 		}
 	}
 
-	// A method to drop a given item	
+	/**
+	 * A method to drop a given item from a player's inventory.
+	 *
+	 * @param player The given player using the Drop command.
+	 * @param oneItem The given Item that the Player is trying to drop.
+	 */
 	public static void commandDrop(Player player, String oneItem) {
 		
 		if (oneItem.length() > 0) {
@@ -771,7 +849,16 @@ public class Interpreter {
 		}
 	}
 
-	// A method to look at the given room
+	/**
+	 * A method to look at the given room and see a description of it.
+	 *
+	 * @param player The given player using the Look command.
+	 * @param action The String of arguments a player issues along with the look
+	 *					command. For example, a player may look at another player,
+	 *					at an item, or at the room(default).
+	 * @param startNewLine A boolean value which indicates whether the player requires
+	 *						a new line sent to them prior to sending additional text.
+	 */ 
 	public static void commandLook(Player player, String action, boolean startNewLine) {
 		
 		String output = "";
@@ -821,7 +908,13 @@ public class Interpreter {
 		player.message(output);
 	}
 
-	// A method to allow a player to laugh
+	/**
+	 * A method to allow a player to laugh and demonstrate this to those in their same room.
+	 *
+	 * @param player The given player using the Laugh command.
+	 * @param action A String argument to go alongside; possibly if a player wanted to
+	 *					laugh at another player.
+	 */
 	private static void commandLaugh(Player player, String action) {
 		
 		Player.messageTheRoom(player.getX(), player.getY(), player.getName() + " begins laughing " +
@@ -829,7 +922,13 @@ public class Interpreter {
 		player.message("You begin laughing hysterically.\n\r");	
 	} 
 
-	// A method to allow a player to dance
+	/**
+	 * A method to allow a player to dance, demonstrate it to the room.
+	 *
+	 * @param player The given player using the Dance command.
+	 * @param action A String argument to go alongside; possibly if a player wanted to
+	 *					dance with another player.
+	 */
     private static void commandDance(Player player, String action) {
 
 		Player.messageTheRoom(player.getX(), player.getY(), player.getName() + " begins dancing " +
@@ -837,7 +936,12 @@ public class Interpreter {
 		player.message("You begin dancing enthusiastically.\n\r");
 	}
 
-	// A method to chat or socialize with other players
+	/**
+	 * A method to chat or socialize with other players.
+	 *
+	 * @param player The given player using the Chat command.
+	 * @param playerInput A String containing the message for the player to chat.
+	 */
 	private static void commandChat(Player player, String playerInput) {
 		
 		// What the acting player will see, set with a default
@@ -859,7 +963,12 @@ public class Interpreter {
 		}
 	}
 
-	// A method to rename a player
+	/**
+	 * A method to rename a player.
+	 *
+	 * @param player The given player using the Name command.
+	 * @param playerInput A String representing the new Name of the Player.
+	 */
 	private static void commandName(Player player, String playerInput) {
 		
 		String name = TextManipulator.oneArgument(playerInput);
@@ -869,13 +978,21 @@ public class Interpreter {
 		player.message("Your name has been set to " + name + ".\n\r");
 	}
 
-	// A method to show the equipment of a player	
+	/**
+	 * A method to show the equipment of a player.
+	 *
+	 * @param player The given player using the Equipment command.
+	 */
 	public static void commandShowEquipped(Player player) {
 		
 		player.message(player.getAllEquipment());
 	}
 	
-	// A method to give credit to myself and for ASCII art credit
+	/**
+	 * A method to give credit to myself and for ASCII art credit to another.
+	 *
+	 * @param player The given player using the credits command.
+	 */
 	public static void commandCredits(Player player) {
 		
 		String output = "JavaWorld was created by me, Nicholas Warner for my Java2 final project." +
@@ -900,7 +1017,12 @@ public class Interpreter {
 		player.message(output);
 	}
 
-	// A method to change a player's title	
+	/**
+	 * A method to change a player's title.
+	 *
+	 * @param player The given player using the Title command.
+	 * @param playerInput A String containing the new title of the player.
+	 */
 	public static void commandTitle(Player player, String playerInput) {
 		
 		if (playerInput.length() > 35) {
@@ -911,22 +1033,5 @@ public class Interpreter {
 		player.setTitle(playerInput);
 		
 		player.message("Title set.\n\r");
-	}
-	
-	// toString method
-	public String toString() {
-		
-		return ("Class: Interpreter");
-	}
-	
-	// equals method
-	public boolean equals(Interpreter oneInterpreter) {
-		
-		if (oneInterpreter.toString().equals(toString())) {
-			
-			return true;
-		}
-		
-		return false;
 	}
 }
