@@ -318,8 +318,9 @@ public class ManageSocketConnections implements Runnable {
 	 * @param msgOut The output stream for the given Player.
 	 * @param msgIn The input stream from the given Player.
 	 * @param newPlayer The given Player who the Streams are associated to.
+	 * @return Returns true if the Player's Password is retrieved.
 	 */
-	private void getPlayerPassword(PrintWriter msgOut, BufferedReader msgIn, 
+	private boolean getPlayerPassword(PrintWriter msgOut, BufferedReader msgIn, 
 									  Player newPlayer) {
 
 		// The password being input
@@ -344,6 +345,8 @@ public class ManageSocketConnections implements Runnable {
 		
 		// We have a password! Set it up!
 		newPlayer.setPassword(tempPassword);
+
+		return true;
 	}	
 
 	/** 

@@ -3,7 +3,7 @@
  * Purpose
  *		
  *		The Hangman class represents the Hangman minigame available within
- *		the main game. A player types "hangman <start / status / play [letter]>"
+ *		the main game. A player types "hangman (start / status / play [letter])"
  *		to participate in the game of hangman.
  *		
  * Structure / Process
@@ -34,7 +34,11 @@ public final class Hangman {
 		throw new AssertionError();
 	}
 
-	/** A method to start a new game. */
+	/** 
+	 * A method to start a new game.
+	 *
+	 * @param mWord The given mystery word for the new game of Hangman.
+	 */
 	public static void newGame(String mWord) {
 		
 		// Set the new mystery word

@@ -1,4 +1,4 @@
-import java.util.Serializable;
+import java.io.Serializable;
 
 /**
  *<pre>
@@ -82,7 +82,7 @@ public class Password implements Serializable {
 	/** 
 	 * A method to compare the given password with this Object's password.
 	 *
-	 * @param givenPassword A String to be compared against.
+	 * @param onePassword A String to be compared against.
 	 * @return Returns true if the passwords are equal and false if they
 	 *          are not.
 	 */

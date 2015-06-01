@@ -1,4 +1,11 @@
+// Import necessary packages, classes, and interfaces
+import java.io.*;
+import java.net.*;
+import java.util.*;
+import java.text.*;
+
 /**
+ *<pre>
  *	Purpose
  *
  *		The Player class is a model which simulates a fictional person in JavaWorld. This
@@ -8,35 +15,6 @@
  *		ability points (such as magic, mana, rage, ... as in other games), an inventory,
  *		physical characteristics, and several other fields.
  *
- *	Algorithm
- *
- *		1. Declare the Player class
- *			- The class will extend Thread
- *			- The class will implement Serializable
- *		2. Declare an Inventory Object for the PC
- *		3. Declare a PhysicalCharacteristics for the PC
- *		4. Declare a Room Object
- *			- This will reference the PC's current Room location
- *		5. Declare a Zone Object
- *			- This will reference the PC's current Zone
- *		6. Declare necessary Unique / Fixed PC Data
- *			- Player Name
- *			- Player Title (Player set description of themselves)
- *			- Player Rank (Related to level / creator status)
- *			- Player Short Description (used for interactions, "Pete", "Fred", ...)
- *			- Player Long Description (used for descriptions, "Pete stands here")
- *		7. Declare the necessary state related PC Data
- *			- Player Level
- *			- Player Max Health
- *			- Player Max Mana
- *			- Player Current Health
- *			- Player Current Mana
- *		8. Declare necessary default and parameterized constructors
- *		9. Declare a method to check if a player file exists
- *		10. Declare a method to check if a given username password combination is valid
- *		11. Declare a method to save a given Player to file
- *		12. Declare a method to load a given Player from file
- *
  *	Structure / Process
  *
  *		The Player is initialized from the accept() thread and becomes a part of the static
@@ -44,75 +22,120 @@
  *		sockets). Once the Player has been added to the Players ArrayList, the GameServer's
  *		gameLoop will then begin interpreting input from the client each iteration until the
  *		client sends the "quit" or "exit" command.
- *
- *	Author			- Nicholas Warner
- *	Created 		- 4/24/2015
- *	Last Updated	- 5/1/2015
+ *</pre>
+ * @author Nicholas Warner
+ * @version 5.1, May 2015
+ * @see Inventory
+ * @see Room
+ * @see Item
+ * @see Equipment
  */
-
-// Import necessary packages, classes, and interfaces
-import java.io.*;
-import java.net.*;
-import java.util.*;
-import java.text.*;
-
 public class Player {
 
+	/** A constant int referencing the Player's (null) attribute. */
 	public static final int PLAYER_NONE			= 0;
+	/** A constant int referencing the Player's Health attribute. */
 	public static final int PLAYER_HEALTH		= 1;
+	/** A constant int referencing the Player's Mana attribute. */
 	public static final int PLAYER_MANA 		= 2;
+	/** A constant int referencing the Player's Strength attribute. */
 	public static final int PLAYER_STRENGTH		= 3;
+	/** A constant int referencing the Player's Dexterity attribute. */
 	public static final int PLAYER_DEXTERITY	= 4;
+	/** A constant int referencing the Player's Intelligence attribute. */
 	public static final int PLAYER_INTELLIGENCE	= 5;
+	/** A constant int referencing the Player's Wisdom attribute. */
 	public static final int PLAYER_WISDOM		= 6;
+	/** A constant int referencing the Player's Fortitude attribute. */
 	public static final int PLAYER_FORTITUDE	= 7;
 
-	// The list of all active players in the game; Vector for synchronization
+	/** The list of all active players in the game; Vector for synchronization. */
 	private static Vector<Player> playerList = new Vector<Player>();
 
-	// The PC's Inventory of Items
+	/** The Player's Inventory of Items. */
 	private Inventory playerInventory;
 	
-	// The PC's Equipped Items
+	/** The Player's Equipped Items. */
 	private Equipment playerEquipment;
 
-	// A reference to the PC's current Room inside the given Zone
+	/** A reference to the Player's current Room inside the given Zone. */
 	private Room currentRoom;
 	
-	// A reference to the PC's current World inside JavaWorld
+	/** A reference to the PC's current World inside JavaWorld. */
 	private World currentWorld;
 
-	// Unique / Fixed PC Characteristics
+	/** This player's name. */
 	private String playerName;
+	/** This player's tite. */
 	private String playerTitle;
+	/** This player's rank. */
 	private String playerRank;
+	/** This player's short description, used in regular player interactions. */
 	private String shortDescription;
+	/** This player's long description, used when looked at or in a room. */
 	private String longDescription;
+	/** This player's (temporary) password. */
 	private String password;
+	/** 
+	 * A boolean indicating whether a player has quit or not. This is mostly
+	 * used to indicate there is not (or is) an active Socket associated with
+	 * this player.
+	 */
 	private boolean playerQuit;
+	/** A boolean indicating whether a Player is or isn't active in JavaWorld. */
 	private boolean frozen;
 	
-	// State related PC Data
+	/** An int indicating the level of this Player. */
 	private int playerLevel;
+	/** An int indicating the maximum health of this Player. */
 	private int maxHealth;
+	/** An int indicating the maximum mana of this Player. */
 	private int maxMana;
+	/** An int indicating the current health of this Player. */
 	private int currentHealth;
+	/** An int indicating the current mana of this Player. */
 	private int currentMana;
+	/**
+	 * A two-dimensional boolean which represents the (x, y) coordinate grid
+	 * of JavaWorld. When a player enters a given room (x, y), this sets the
+	 * discoveredRooms[x][y] to true.
+	 */
 	private boolean[][] discoveredRooms;
-	private boolean[] pScore;
+	/** 
+	 * This holds the unix timestamp when a Player may act again. If the
+	 * current unix time is less than this timestamp, a Player's action
+	 * is held in queue in their msgIn buffer.
+	 */
 	private long waiting;
+	/**
+	 * Not yet implemented. Same general concept as waiting.
+	 *
+	 * @see #waiting
+	 */
 	private long chatWaiting;
 
-	// Connection related data
+	/** A reference to the Player's Socket. */
 	Socket playerConnection;
+	/** A reference to the Player's output stream. */
 	OutputStream playerOut;
+	/** A reference to the Player's input stream. */
 	InputStream playerIn;
 
-	// Default Constructor
+	/** 
+	 * A default constructor. All values are initialized to null, 0, empty String,
+	 * or a default setting such as World.HOMELOCATION. Some are also initialized
+	 * to a reasonable value, such as level being 1 to start, or starting health
+	 * being 100.
+	 *
+	 * @see World#HOMELOCATION
+	 * @see Room#getWorld()
+	 * @see Inventory
+	 * @see Equipment
+	 */
     public Player() {
     	
     	playerInventory		= null;
-    	currentRoom			= World.getRoom(100, 100);
+    	currentRoom			= World.getRoom(World.HOMELOCATION, World.HOMELOCATION);
     	currentWorld		= currentRoom.getWorld();
     	
     	playerName			= "JohnDoe";
@@ -141,7 +164,13 @@ public class Player {
 		playerEquipment		= new Equipment();
     }
 
-	// Accessor Methods
+	/**
+	 * A method to test whether a Player has an active Socket connection. This
+	 * method needs to be reworked.
+	 *
+	 * @return Returns true if the Player's playerOut is null and false
+	 *			otherwise.
+	 */
 	public boolean getConnected() {
 		
 		if (playerOut == null) {
@@ -152,101 +181,208 @@ public class Player {
 		return false;
 	}
 
+	/**
+	 * A method to get the name of a Player.
+	 *
+	 * @return Returns the name of this Player.
+	 */
 	public String getName() {
 		
 		return playerName;
 	}
-	
+
+	/**
+	 * A method to get the Player's current X coordinate.
+	 *
+	 * @return Returns the Player's current X coordinate.
+	 */
 	public int getX() {
 
 		return this.currentRoom.getX();
 	}
-	
+
+	/**
+	 * A method to get the Player's current Y coordinate.
+	 *
+	 * @return Returns the Player's current y coordinate.
+	 */
 	public int getY() {
 		
 		return this.currentRoom.getY();
 	}
-	
+
+	/**
+	 * A method to get the Player's maximum health.
+	 *
+	 * @return Returns the Player's maximum health.
+	 */
 	public int getMaxHealth() {
 		
 		return maxHealth;
 	}
 
+	/**
+	 * A method to get the Player's current health.
+	 *
+	 * @return Returns the Player's current health.
+	 */
 	public int getHealth() {
 		
 		return currentHealth;
 	}
-	
+
+	/**
+	 * A method to get the World this Player is a part of.
+	 *
+	 * @return Returns the World Object this Player is in.
+	 */
 	public World getWorld() {
 		
 		return currentWorld;
 	}
-	
+
+	/**
+	 * A method to get this Player's current level.
+	 *
+	 * @return Returns this Player's current level.
+	 */
 	public int getLevel() {
 		
 		return playerLevel;
 	}
-	
+
+	/**
+	 * A method to get the Room Object the Player is currently in.
+	 *
+	 * @return Returns the current Room Object that the Player is in.
+	 */
     public Room getRoom() {
 		
 		return currentRoom;
 	}
 
+	/**
+	 * A method which gets this Player's current waiting time.
+	 *
+	 * @return Returns the Player's unix timestamp which is compared against
+	 *			the current unix time.
+	 * @see #waiting
+	 */
 	public long getWaiting() {
 		
 		return waiting;
 	}
 
+	/**
+	 * A method which gets this Player's current chat waiting time.
+	 *
+	 * @return Returns the Player's current chat waiting value.
+	 * @see #chatWaiting
+	 */
 	public long getChatWaiting() {
 		
 		return chatWaiting;
 	}
 
+	/**
+	 * A method which gets a String representing this Player's current
+	 * equipment.
+	 *
+	 * @return Returns a String displaying this Player's equipment.
+	 */
 	public String getAllEquipment() {
 		
 		return playerEquipment.displayEquipment();
 	}
-	
+
+	/**
+	 * A method which gets the Player's title.
+	 *
+	 * @return Returns this Player's title.
+	 */
 	public String getTitle() {
 		
 		return playerTitle;
 	}
-	
+
+	/**
+	 * A method which gets the Player's rank.
+	 *
+	 * @return Returns this Player's rank.
+	 */
 	public String getRank() {
 		
 		return playerRank;
 	}
-	
+
+	/**
+	 * A method which gets the Player's short description.
+	 *
+	 * @return Returns the Player's short description.
+	 * @see #shortDescription
+	 */
 	public String getShortDescription() {
 		
 		return shortDescription;
 	}
-	
+
+	/**
+	 * A method which gets the Player's long description.
+	 *
+	 * @return Returns the Player's long description.
+	 */
 	public String getLongDescription() {
 		
 		return longDescription;
 	}
-	
+
+	/**
+	 * A method which gets the Player's maximum mana.
+	 *
+	 * @return Returns the Player's maxmimum mana.
+	 */
 	public int getMaxMana() {
 		
 		return maxMana;
 	}
-	
+
+	/**
+	 * A method which gets the Player's current health.
+	 *
+	 * @return Returns the Player's current health.
+	 */
 	public int getCurrentHealth() {
 		
 		return currentHealth;
 	}
-	
+
+	/**
+	 * A method which gets the Player's current mana.
+	 *
+	 * @return Returns the Player's current mana.
+	 */
 	public int getCurrentMana() {
 		
 		return currentMana;
 	}
 
+	/**
+	 * A method which returns true if a player is frozen and false if not.
+	 *
+	 * @return Returns true if this Player is frozen and false if not.
+	 */
 	public boolean getFrozen() {
 		
 		return frozen;
 	}
 
+	/**
+	 * A method which returns the Player's who status.
+	 *
+	 * @return Returns a String stating the Player's level, name, and title. If
+	 *			the player is an Administrator, then the level is replaced with
+	 *			the String, "Admin".
+	 */
 	public static String getWhoStatus() {
 
 		String output = "";
@@ -269,7 +405,13 @@ public class Player {
 		
 		return output;
 	}
-	
+
+	/**
+	 * A method which gets a list of all Players within a given room.
+	 *
+	 * @param player The player who's in the Room to begin with.
+	 * @return Returns a String with a description of every player within a Player's room.
+	 */
 	public static String getPlayersInRoom(Player player) {
 
 		String output = "";
@@ -284,13 +426,21 @@ public class Player {
 		
 		return output;
 	}
-	
+
+	/**
+	 * A method which gets the number of Players currently online in JavaWorld.
+	 *
+	 * @return Returns an int representing the numbers of players online.
+	 */
 	public static int getNumberOnline() {
 		
 		return playerList.size();
 	}
 	
-	// Mutator Methods	
+	/**
+	 * A method which resets a Player's list of discovered rooms as shown on
+	 * their map.
+	 */
 	public void clearDiscoveredRooms() {
 		
 		for(int i = 0; i < World.MAXROOMS; i++) {
@@ -298,73 +448,149 @@ public class Player {
 			discoveredRooms[i][i] = false;
 		}
 	}
+
+	/**
+	 * A method which adds a given player into the main playerList, then announces
+	 * the player's login to the rest of the players on JavaWorld.
+	 *
+	 * @param newPlayer The given Player to be added to the playerList.
+	 * @see #playerList
+	 */
 	public static void addPlayer(Player newPlayer) {
 		
 		playerList.add(newPlayer);
 		infoAll(newPlayer.getName() + " has logged into Java World.");
 	}
-	
+
+	/**
+	 * A method which sets or changes the title of a given Player.
+	 *
+	 * @param title The new title of this Player.
+	 */
 	public void setTitle(String title) {
 		
 		playerTitle = title;
 	}
-	
+
+	/**
+	 * A method which sets the rank this Player.
+	 *
+	 * @param rank The new rank for this Player.
+	 */
 	public void setRank(String rank) {
 		
 		playerRank = rank;
 	}
-	
+
+	/**
+	 * A method to set the short description of this Player.
+	 *
+	 * @param shortDescription The new Short Description of this Player.
+	 */
 	public void setShortDescription(String shortDescription) {
 		
 		this.shortDescription = shortDescription;
 	}
-	
+
+	/**
+	 * A method to set the Long Description of this Player.
+	 *
+	 * @param longDescription The new Long Description of this Player.
+	 */
 	public void setLongDescription(String longDescription) {
 		
 		this.longDescription = longDescription;
 	}
 
+	/**
+	 * A method to set the maximum health of this Player.
+	 *
+	 * @param maxHealth The new maximum health of this Player.
+	 */
 	public void setMaxHealth(int maxHealth) {
 		
 		maxHealth = maxHealth;
 	}
-	
+
+	/**
+	 * A method to set the maximum mana of this Player.
+	 *
+	 * @param maxMana The new maximum mana of this Player.
+	 */
 	public void setMaxMana(int maxMana) {
 		
 		this.maxMana = maxMana;
 	}
-	
+
+	/**
+	 * A method to set the current health of this Player.
+	 *
+	 * @param currentHealth The new current health of this Player.
+	 */
 	public void setCurrentHealth(int currentHealth) {
 		
 		this.currentHealth = currentHealth;
 	}
-	
+
+	/**
+	 * A method to set the current mana of this Player.
+	 *
+	 * @param currentMana The new current mana of this Player.
+	 */
 	public void setCurrentMana(int currentMana) {
 		
 		this.currentMana = currentMana;
 	}
-		
+
+	/**
+	 * A method to set the level of this Player.
+	 *
+	 * @param level The new level of this Player.
+	 */	
 	public void setLevel(int level) {
 		
 		playerLevel = level;
 	}
 
+	/**
+	 * A method to set the current Room of this Player.
+	 *
+	 * @param room The new Room this Player occupies.
+	 */
 	public void setCurrentRoom(Room room) {
 		
 		currentRoom = room;
 	}
-	
+
+	/**
+	 * A method to set the current World of this Player.
+	 *
+	 * @param world The new World this Player is a part of.
+	 */
 	public void setCurrentWorld(World world) {
 		
 		currentWorld = world;
 	}
-	
+
+	/**
+	 * A method to set the quit boolean of this Player.
+	 *
+	 * @param quit A boolean value which represents whether the player has
+	 *				quit(true) or not quit(false).
+	 */
 	public void setQuit(boolean quit) {
 		
 		playerQuit = quit;
 	}
 		
-	// If the player exists AND the password is correct, return true
+	/**
+	 * A method which checks if a given Player exists and if their password is 
+	 * correct.
+	 *
+	 * @param onePlayer The given Player to check
+	 * @return If the player exists AND the password is correct, the method
+	 *			returns true.
+	 */
 	public static boolean checkPlayerLogin(Player onePlayer) {
 
 		// For the player's name
@@ -396,7 +622,12 @@ public class Player {
 		return false;
 	}
 	
-	// Test whether the given player exists
+	/**
+	 * A method to test whether the given player exists.
+	 *
+	 * @param playerName The Player's name to see if they exist.
+	 * @return Returns true if the player exists, false if the Player doesn't.
+	 */
 	public static boolean checkPlayerExists(String playerName) {
 
 		// Ensure we're comparing against lowercase
@@ -408,7 +639,11 @@ public class Player {
 		return false;
 	}
 
-	// A method to save a single player file
+	/**
+	 * A method to save a single player file and its accompanying discoveredRooms.
+	 *
+	 * @param onePlayer The player meant to be saved.
+	 */
 	public static void savePlayer(Player onePlayer) {
 		
 		// Declare a PrintWriter object for writing
@@ -505,7 +740,12 @@ public class Player {
 		onePlayer.playerInventory.saveInventory(onePlayer.getName());
 	}
 
-	// A method to load a player given the player's name
+	/**
+	 * A method to load a player given the player's name.
+	 *
+	 * @param playerName The name of the player to load.
+	 * @return Returns the loaded Player Object.
+	 */
 	public static Player loadPlayer(String playerName) {
 		
 		// Declare a Scanner Object to read in from a file
@@ -634,13 +874,17 @@ public class Player {
 		return onePlayer;
 	}
 	
-	// Save the player's inventory
+	/** A method to save this player's inventory. */
 	public void saveInventory() {
 		
 		playerInventory.saveInventory(playerName);
 	}
 
-	// Messages all currently connected Players
+	/** 
+	 * A method to message all currently connected Players.
+	 * 
+	 * @param msg The message to send to all the Players.
+	 */
 	public static void messageAll(String msg) {
 		
 		for(Player onePlayer: playerList) {
@@ -650,7 +894,12 @@ public class Player {
 		}
 	}
 	
-	// Messages all currently connected Players except given Player
+	/**
+	 * Messages all currently connected Players except given Player.
+	 *
+	 * @param msg The message to send to all the Players.
+	 * @param dontMsg The Player who should not receive the message.
+	 */
 	public static void messageAll(String msg, Player dontMsg) {
 		
 		for(Player onePlayer: playerList) {
@@ -663,7 +912,13 @@ public class Player {
 		}
 	}
 
-	// If we don't have a Player object but do have their name, message them by name
+	/**
+	 * A method to message a Player by name if we don't have a reference to the
+	 * Player Object.
+	 *
+	 * @param playerName The name of the Player meant to be messaged
+	 * @param msg The message to send to the given Player.
+	 */
 	public static void sendMessageToPlayerByName(String playerName, String msg) {
 		
 		// Get the player's name
@@ -681,7 +936,13 @@ public class Player {
 		}
 	}
 
-	// A method to freeze a player's input (player can no longer act in game	
+	/**
+	 * A method to freeze a player's input (player can no longer act in game).
+	 *
+	 * @param playerName The name of the Player to be frozen.
+	 * @return Returns true if the the Player was frozen successfully and false
+	 *			if the Player was not frozen.
+	 */
 	public static boolean freezePlayer(String playerName) {
 		
 		// Get the player's name
@@ -702,7 +963,13 @@ public class Player {
 		return false;
 	}
 	
-	// If a player was frozen, they are now unfrozen
+	/**
+	 * A method to unfreeze a given Player.
+	 *
+	 * @param playerName The name of the Player to unfreeze.
+	 * @return Returns true if the Player was successfully unfrozen, or false
+	 *			if the Player was not.
+	 */
 	public static boolean unFreezePlayer(String playerName) {
 		
 		// Get the player's name
@@ -723,7 +990,11 @@ public class Player {
 		return false;		
 	}
 	
-	// Create the player's password file (Serialized)
+	/**
+	 * A method to create the player's password file (Serialized).
+	 *
+	 * @param newPlayer The given Player to create a Password File for.
+	 */
 	public static void createPWordFile(Player newPlayer) {
 
 		// Create a Password object from the player's password
@@ -752,7 +1023,12 @@ public class Player {
 		}
 	}
 	
-	// Load the given password file from the player's name
+	/** 
+	 * A method to load the given password file from the player's name.
+	 *
+	 * @param charName The name of the Player meant to be loaded
+	 * @return Returns a Password Object of the given Player.
+	 */
 	public static Password loadPWordFile(String charName) {
 		
 		// Declare a Password object
@@ -801,8 +1077,7 @@ public class Player {
 		return pWord;
 	}
 
-	// In the event that something requires messaging all players, let's ensure they're not
-	// left without a prompt.
+	/** A method meant to rebuild the Prompts of all Players online in JavaWorld. */
     public static void rebuildAllPrompts() {
 		
 		for(Player onePlayer: playerList) {
@@ -811,32 +1086,61 @@ public class Player {
 		}
 	}
 
-	// Mutator Methods
+	/**
+	 * A method to set the Player's Socket connection.
+	 *
+	 * @param playerConnection The Socket connection to be set on the Player Object.
+	 */
 	public void setPlayerConnection(Socket playerConnection) {
 		
 		this.playerConnection = playerConnection;
 	}
-	
+
+	/**
+	 * A method to set the Player's output stream.
+	 *
+	 * @param playerOut The new output stream for the Player.
+	 */
 	public void setOutput(OutputStream playerOut) {
 		
 		this.playerOut = playerOut;
 	}
-	
+
+	/**
+	 * A method to set the Player's input stream.
+	 *
+	 * @param playerIn The new input stream for the Player.
+	 */
 	public void setInput(InputStream playerIn) {
 		
 		this.playerIn = playerIn;
 	}
 
+	/**
+	 * A method to set the Player's name.
+	 *
+	 * @param playerName The new name of the Player.
+	 */
 	public void setName(String playerName) {
 		
 		this.playerName = playerName;
 	}
 
+	/**
+	 * A method to set the Password of the Player.
+	 *
+	 * @param password The new password for the Player.
+	 */
 	public void setPassword(String password) {
 		
 		this.password = password;
 	}
-		
+
+	/**
+	 * A method to set the current health of the Player.
+	 *
+	 * @param currentHealth The new currentHealth of the Player.
+	 */	
 	public void setHealth(int currentHealth) {
 		
 		this.currentHealth = currentHealth;
@@ -848,7 +1152,11 @@ public class Player {
 	 *
 	 *********************************************/
 
-	// Read input from a given Player
+	/**
+	 * A method to read input from this Player.
+	 *
+	 * @return Returns a String with the Player's input up to the next newline.
+	 */
 	public String readInput() {
 		
 		// For user input
@@ -897,7 +1205,11 @@ public class Player {
 		return null;
 	}
 	
-	// Message one Player connected to JavaWorld
+	/**
+	 * A method to message one Player connected to JavaWorld.
+	 *
+	 * @param msg The message to send to this Player.
+	 */
 	public void message(String msg) {
 		
 		msg = TextManipulator.addColor(msg);
@@ -926,13 +1238,19 @@ public class Player {
 		}
 	}
 
-	// Ensure the password field is empty
+	/** A method to ensure the password field is empty. */
 	public void clearPassword() {
 		
 		this.password = "";
 	}
 	
-	// Check whether two passwords are equivalent
+	/**
+	 * A method to test whether two passwords are equivalent.
+	 *
+	 * @param password The password to be tested.
+	 * @return Returns true if the passwords are equal and false if the
+	 *			passwords are not equal.
+	 */
 	public boolean comparePassword(String password) {
 		
 		if (this.password.equals(password)) {
@@ -943,7 +1261,13 @@ public class Player {
 		return false;
 	}
 	
-	// Damage all players within a given room
+	/**
+	 * A method to damage all players within a given room.
+	 *
+	 * @param x The X coordinate of the Room.
+	 * @param y The Y coordinate of the Room.
+	 * @param shortDescription The short description of Player damaging the room.
+	 */
 	public static void damagePlayersInRoom(int x, int y, String shortDescription) {
 
 		int damage = 0;
@@ -965,13 +1289,21 @@ public class Player {
 		}		
 	}
 	
-	// Damage an individual player a given amount
+	/**
+	 * A method to damage an individual player a given amount.
+	 *
+	 * @param damageAmount The amount of damage done to this Player.
+	 */
 	public void damagePlayer(int damageAmount) {
 		
 		currentHealth -= damageAmount;
 	}
 
-	// Build an individual player's prompt
+	/**
+	 * A method to build an individual player's prompt.	
+	 *
+	 * @return Returns the constructed Prompt as a String.
+	 */
 	public String buildPrompt() {
 		
 		String temp;
@@ -1009,7 +1341,12 @@ public class Player {
 		return temp;
 	}
 	
-	// Remove the discovery of a given (x, y)
+	/**
+	 * A method to remove the discovery of a given (x, y).
+	 *
+	 * @param x The X coordinate of the Room
+	 * @param y The Y coordinate of the Room
+	 */
 	public void undiscoverRoom(int x, int y) {
 		
         if (x >= 0 && y >= 0 && x < World.MAXROOMS && y < World.MAXROOMS) {
@@ -1018,7 +1355,12 @@ public class Player {
         }
 	}
 	
-	// Set the location of a Player to (x, y)
+	/**
+	 * A method to set the location of a Player to (x, y).
+	 *
+	 * @param x The X coordinate of the Room.
+	 * @param y The Y coordinate of the Room.
+	 */
 	public void setLocation(int x, int y) {
 	
 		if (x >= 0 && x < World.MAXROOMS && y >= 0 && y < World.MAXROOMS) {
@@ -1027,7 +1369,11 @@ public class Player {
 		}
 	}
     
-    // Move a player East
+    /**
+	 * A method to move a player East.
+	 *
+	 * @return Returns true if the player moved and false if not.
+	 */
     public boolean moveEast() {
 		
 		int x = this.currentRoom.getX();
@@ -1042,7 +1388,11 @@ public class Player {
 		return false;
 	}
 
-	// Move a player West
+	/**
+	 * A method to move a player West.	
+	 *
+	 * @return Returns true if the player moved and false if not.
+	 */
     public boolean moveWest() {
 		
 		int x = this.currentRoom.getX();
@@ -1057,7 +1407,11 @@ public class Player {
 		return false;
 	}
 
-	// Move a player north
+	/**
+	 * A method to move a player north.
+	 *
+	 * @return Returns true if the player moved and false if not.
+	 */
 	public boolean moveNorth() {
 		
 		int x = this.currentRoom.getX();
@@ -1072,7 +1426,11 @@ public class Player {
 		return false;
 	}
 
-	// Move a player south
+	/**
+	 * A method to move a player south.
+	 *
+	 * @return Returns true if the Player moves and false if not.
+	 */
     public boolean moveSouth() {
 		
 		int x = this.currentRoom.getX();
@@ -1087,7 +1445,7 @@ public class Player {
 		return false;
 	}
 	
-	// Discover a given (x, y) room
+	/** A method to discover a given (x, y) room for a Player. */
     public void discoverRoom() {
 
         int x = getX();
@@ -1099,7 +1457,14 @@ public class Player {
         }
 	}
 
-	// Test whether a room has been discovered	
+	/**
+	 * A method to test whether a room has been discovered.
+	 *
+	 * @param x The X coordinate of the Room to test.
+	 * @param y The Y coordinate of the Room to test.
+	 * @return Returns true if the room is now discovered, false if there
+	 *			is an issue with discovering the Room.
+	 */
     public boolean discoveredRoom(int x, int y) {
 	
         if (x >= 0 && y >= 0 && x < World.MAXROOMS && y < World.MAXROOMS) {
@@ -1110,13 +1475,16 @@ public class Player {
         return false;
 	}
 	
-	// Update the state of the Player
+	/** A method to update the state of the Player. */
 	public static void updateState() {
 		
 		// This will relate to future updates, specifically objectives
 	}
 	
-	// Read input from the player's socket and Interpret it via Interpreter class
+	/** 
+	 * A method to read input from the player's socket and Interpret it via 
+	 * the Interpreter class.
+	 */
 	public static void interpretInput() {
 		
 		String playerInput = "";
@@ -1155,7 +1523,12 @@ public class Player {
 		}
 	}
 
-	// Test whether the given player is an admin or not
+	/**
+	 * A method to test whether the given player is an admin or not.
+	 *
+	 * @param onePlayer The Player to test.
+	 * @return Returns true if the Player is an Admin and false if not.
+	 */
 	public static boolean isAdmin(Player onePlayer) {
 		
 		if (onePlayer.isAdmin()) {
@@ -1166,21 +1539,33 @@ public class Player {
 		return false;
 	}
 	
-	// Send an information message to everyone in the game
+	/**
+	 * A method to send an information message to everyone in the game.
+	 *
+	 * @param msg The message to send to all the Players in the game.
+	 */
 	public static void infoAll(String msg) {
 		
 		msg = "#YInfo -> #n" + msg;
 		messageAll(msg);		
 	}
 	
-	// Pick up a give item
+	/**
+	 * A method to pick up a give item.
+	 *
+	 * @param oneItem The given Item to be picked up.
+	 */
 	public void pickupItem(Item oneItem) {
 		
 		playerInventory.addToInventory(oneItem);
 		currentRoom.removeItem(oneItem);
 	}
 
-	// Drop a given item	
+	/**
+	 * A method to drop a given item.
+	 *
+	 * @param oneItem The Item meant to be dropped.
+	 */
 	public void dropItem(Item oneItem) {
 		
 		if (!playerEquipment.isEquipped(oneItem)) {
@@ -1195,43 +1580,74 @@ public class Player {
 		}
 	}
 	
-	// Display the player's inventory
+	/**
+	 * A method to display the player's inventory.
+	 *
+	 * @return Returns a String listing the Player's Inventory.
+	 */
 	public String displayInventory() {
 		
 		return playerInventory.displayInventory(false);
 	}
 	
-	// Check whether the player has a given Item
+	/**
+	 * A method to check whether the player has a given Item.
+	 *
+	 * @param oneItem The name of the Item to be checked for.
+	 * @return Returns true if the item is within the Player's Inventory
+	 *			and false if the item isn't.
+	 */
 	public Item hasItem(String oneItem) {
 		
 		return playerInventory.contains(oneItem);
 	}
 
-	// Check whether the given Item is equipped on the player
+	/**
+	 * A method to check whether the given Item is equipped on the player.
+	 *
+	 * @param oneItem The name of the Item to be checked for.
+	 * @return Returns the requested Item if available, null if not.
+	 */
 	public Item hasItemInEquipment(String oneItem) {
 		
 		return playerInventory.containsInEquipment(oneItem);
 	}
 
-	// Check whether the Item is in the Player's inventory
+	/**
+	 * A method to check whether the Item is in the Player's inventory.
+	 *
+	 * @param oneItem The name of the Item to be checked for.
+	 * @return Returns a true if the Item is in Inventory and false if the
+	 *			Item is not in Inventory.	
+	 */
 	public Item hasItemInInventory(String oneItem) {
 		
 		return playerInventory.containsInInventory(oneItem);
 	}
 	
-	// Equip a given item on a player
+	/**
+	 * A method to equip a given item on a player.
+	 *
+	 * @param oneItem The name of the Item to be equipped.
+	 * @return Returns a String with the text of the Item being equipped.
+	 */
 	public String equipItem(Item oneItem) {
 		
 		return playerEquipment.equipItem(oneItem);
 	}
 	
-	// Unequip a given item
+	/** 
+	 * A method to unequip a given item.
+	 *
+	 * @param oneItem The name of the Item to be unequipped.
+	 * @return Returns a String with the text of the Item being removed.
+	 */
 	public String unequipItem(Item oneItem) {
 		
 		return playerEquipment.unequipItem(oneItem);
 	}
 	
-	// Save every player, then close their connection
+	/** A method to save every player, then close their connection. */
 	public static void saveAndCloseConnections() {
 		
 		for(Player onePlayer: Player.playerList) {
@@ -1250,7 +1666,12 @@ public class Player {
 		}
 	}
 
-	// Test whether the player is an administrator	
+	/**
+	 * A method to test whether the player is an administrator or not.
+	 *
+	 * @return A true value if the Player is an Administrator and a false value
+	 *			if the Player is not an Administrator.
+	 */
 	public boolean isAdmin() {
 		
 		if (playerName.equalsIgnoreCase(Config.getAdmin())) {
@@ -1261,7 +1682,14 @@ public class Player {
 		return false;
 	}
 		
-	// Test whether there are any players within a given (x, y) room
+	/**
+	 * A method to test whether there are any players within a given (x, y) room.
+	 *
+	 * @param roomX The X coordinate for the Room.
+	 * @param roomY The Y coordinate for the Room.
+	 * @return Returns a true value if the Player is in the given (x, y) room and
+	 *			a false value if the Player is not.
+	 */
 	public static boolean anyPlayersInRoom(int roomX, int roomY) {
 		
 		for(Player onePlayer: playerList) {
@@ -1275,7 +1703,13 @@ public class Player {
         return false;		
 	}
 
-	// Send a message to all players to a given (x, y) room	
+	/**
+	 * A method to send a message to all players to a given (x, y) room.
+	 *
+	 * @param x The X coordinate for the Room.
+	 * @param y The Y coordinate for the Room.
+	 * @param message The message to be sent to the Players in the room.
+	 */
 	public static void messageTheRoom(int x, int y, String message) {
 		
 		for(Player onePlayer: playerList) {
@@ -1288,7 +1722,15 @@ public class Player {
 		}        		
 	}
 
-	// Send a message to all players to a given (x, y) room except a dontMsg player
+	/**
+	 * A method to send a message to all players to a given (x, y) room 
+	 * except a dontMsg player.
+	 *
+	 * @param x The Room's x coordinate.
+	 * @param y The Room's y coordinate.
+	 * @param message The message to be sent to the Players in the Room
+	 * @param dontMsg The Player who does not receive the message.
+	 */
 	public static void messageTheRoom(int x, int y, String message, Player dontMsg) {
 		
 		for(Player onePlayer: playerList) {
@@ -1302,7 +1744,11 @@ public class Player {
 		}        		
 	}
 	
-	// A toString method
+	/**
+	 * A method to describe the Player and return the value as a String.
+	 *
+	 * @return Returns a unique String indicating information about the Player.
+	 */
 	public String toString() {
 		
 		return ("Player: " + playerName + "\nTitle: " + playerTitle +
@@ -1312,7 +1758,13 @@ public class Player {
 				"\nMax Health: " + maxHealth + "\nMax Mana: " + maxMana + "\n");
 	}
 	
-	// An equals method
+	/**
+	 * A method to test whether two Players are equal, or two Player Objects
+	 * are equal.
+	 *
+	 * @param onePlayer The Player to be compared to this Player.
+	 * @return Returns true if the Players are the same, or false if not.
+	 */
 	public boolean equals(Player onePlayer) {
 		
 		if (onePlayer.toString().equals(toString())) {
