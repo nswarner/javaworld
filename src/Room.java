@@ -1,78 +1,28 @@
+import java.io.*;
+import java.util.Scanner;
+import java.util.ArrayList;
+
 /**
+ *<pre>
  *	Purpose
  *
  *		The Room class is a representation of a single unit of 2D space. Any number of players
  *		can occupy this unit of space. Rooms can be of multiple environmental types like caves,
  *		forests, parks, cities, etc. 
  *
- *	Algorithm
- *
- *		1. Declare the room class
- *		2. Import the necessary packages, classes, interfaces, ...
- * 		3. Declare a constant String Array which represent the filesystem location of each 
- *			of the different room data files
- *			- Cave, City, Forest, Lake, Mountain, Park
- *		4. Declare constant ints which represent the different room filenames in the
- *			given String array, i.e. int CAVE represents index [5]
- *		5. Declare an ArrayList for each of the different roomtype room names
- *			- forestRoomNames, lakeRoomNames, ...
- *		6. Declare an ArrayList for each of the different roomtype room descriptions
- *			- forestRoomDesc, lakeRoomDesc, ...
- *		7. Declare private instance variables to hold room fields
- *			- int roomX, int roomY -> (x, y) location of the room
- *			- String roomName -> Name of the room
- *			- String roomDescription -> Description of the room
- *			- World insideWorld -> A reference to the World Object the room exists within
- *			- boolean newRoom -> A flag indicating whether this room is new or not
- *			- Inventory roomInventory -> An inventory object which collects the number of
- *				items within the room and allows it to be listed
- *		8. Declare a default constructor
- *		9. Declare parameterized constructors
- *			- If the (x, y), name, desc, and World are given
- *			- If the (x, y), name, desc, World, and a boolean for new room are given
- *		10. Declare necessary accessor methods
- *			- Create a getExits method for a given (x, y) room
- *			- Create a getInventory method which calls the Inventory Object's
- *				displayInventory method
- *		11. Declare necessary mutator methods
- *			- Create a method to set and remove the new room flag
- *			- Create a method to remove an item from the room's inventory by calling
- *				the inventory's removeFromInventory method
- *		12. Declare a method to test whether there are players in a given room
- *			- Call Player.anyPlayersInRoom()
- *		13. Declare a static method to load the dynamically generated room values
- *			- One call for each room type (FOREST, LAKE, CITY, ...)
- *		14. Declare a static method to dynamically load one specific room type
- *			- Declare and instantiate a Scanner object
- *				- Read in until -1, this is the roomName section
- *				- Read in until -2, this is the roomDesc section
- *			- CLOSE THE FILE
- *			- Catch any Exceptions
- *		15. Declare a method to get a random room name from a specified room ArrayList
- *		16. Declare a method to get a random room desc from a specified room ArrayList
- *		17. Declare a method to test whether a room contains a given item or not
- *		18. Declare a toString method
- *		19. Declare an equals method
- *
  *	Structure / Process
  *
  *		Rooms are loaded in via the World class initially. So the hierarchy goes something like
- *		1 World -> Many Rooms -> Many Many Players / Items / Things.
+ *		1 World -&gt; Many Rooms -&gt; Many Many Players / Items / Things.
+ *</pre>
  *
- *	Author			- Nicholas Warner
- *	Created 		- 4/24/2015
- *	Last Updated	- 5/1/2015
+ * @author Nicholas Warner
+ * @version 5.1, May 2015
+ * @see World
  */
-
-// Import the necessary classes, packages, interfaces, ...
-import java.io.*;
-import java.util.Scanner;
-import java.util.ArrayList;
-
-// Declare the room class
 public class Room {
 
-	// Declare a constant String Array for filenames of the different room types
+	/** A constant String Array for filenames of the different room types. */
 	private static final String[] rTypeFilenames	= { "../data/forestTemplate.data",
 														"../data/lakeTemplate.data",
 														"../data/cityTemplate.data",
@@ -80,28 +30,43 @@ public class Room {
 														"../data/mountainTemplate.data",
 														"../data/caveTemplate.data" };
 
-	// Declare final ints which represent the different indices of the filename Array
+	/** Final int which represent the FOREST index of the filename Array. */
 	private static final int FOREST		= 0;
+	/** Final int which represent the LAKE index of the filename Array. */
 	private static final int LAKE		= 1;
+	/** Final int which represent the CITY index of the filename Array. */
 	private static final int CITY		= 2;
+	/** Final int which represent the PARK index of the filename Array. */
 	private static final int PARK		= 3;
+	/** Final int which represent the MOUNTAIN index of the filename Array. */
 	private static final int MOUNTAIN	= 4;
+	/** Final int which represent the CAVE index of the filename Array. */
 	private static final int CAVE		= 5;
 	
-	// Declare ArrayLists which contain the roomNames of each room type
+	/** An ArrayList which contain the roomNames of the Forest. */
 	private static ArrayList<String> forestRoomNames	= new ArrayList<String>();
+	/** An ArrayList which contain the roomNames of the Lake. */
 	private static ArrayList<String> lakeRoomNames		= new ArrayList<String>();
+	/** An ArrayList which contain the roomNames of the City. */
 	private static ArrayList<String> cityRoomNames		= new ArrayList<String>();
+	/** An ArrayList which contain the roomNames of the Park. */
 	private static ArrayList<String> parkRoomNames		= new ArrayList<String>();
+	/** An ArrayList which contain the roomNames of the Mountain. */
 	private static ArrayList<String> mountainRoomNames	= new ArrayList<String>();
+	/** An ArrayList which contain the roomNames of the Cave. */
 	private static ArrayList<String> caveRoomNames 		= new ArrayList<String>();
 
-	// Declare ArrayLists which contain the roomDescs of each room type
+	/** An ArrayList which contain the roomDescs of each Forest Room */
 	private static ArrayList<String> forestRoomDesc		= new ArrayList<String>();
+	/** An ArrayList which contain the roomDescs of each Lake Room */
 	private static ArrayList<String> lakeRoomDesc		= new ArrayList<String>();
+	/** An ArrayList which contain the roomDescs of each City Room */
 	private static ArrayList<String> cityRoomDesc		= new ArrayList<String>();
+	/** An ArrayList which contain the roomDescs of each Park Room */
 	private static ArrayList<String> parkRoomDesc		= new ArrayList<String>();
+	/** An ArrayList which contain the roomDescs of each Mountain Room */
 	private static ArrayList<String> mountainRoomDesc	= new ArrayList<String>();
+	/** An ArrayList which contain the roomDescs of each Cave Room */
 	private static ArrayList<String> caveRoomDesc		= new ArrayList<String>();
 	
 	// Declare ints which represent the coordinates of the room

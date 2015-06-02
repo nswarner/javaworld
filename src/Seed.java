@@ -1,4 +1,9 @@
+import java.io.*;
+import java.util.Random;
+import java.util.Scanner;
+
 /**
+ *<pre>
  *	Purpose
  *		
  *		JavaWorld allows for randomly generating different rooms and sections of the world. To
@@ -7,38 +12,6 @@
  *		the randomly generated rooms. If the admin would like a new layout, they may generate
  *		a new seed file on game startup (or save the current seed and generate a new seed).
  *		
- *	Algorithm
- *		
- *		1. Declare the Seed class
- *		2. Import the necessary packages and classes
- *		3. Declare a constant String to hold the default seed file path and name
- *		4. Declare a constant int to hold the the size of the seed file
- *		5. Create a String to hold the dynamic seed name
- *			- In the event that we want to have many seed files and allow for the
- *				choice of a seed file when the game starts (OPTIONAL)
- *		6. Declare a double array to hold the doubles read from file
- *		7. Declare an int to hold the position in the array
- *		8. Declare a generateSeed method
- *			- Create a new Random Number Generator(rng)
- *			- Try to open the seed file
- *			- In a loop, print the large number of seeds to the file
- *			- Close the file
- *			- Notify the user that the seed file has been generated
- *		9. Declare a method to set the seed file name
- *		10. Declare a method to get the seed file name
- *		11. Declare a method to loadRandomNumbers
- *			- If the seedFileName hasn't been set, give it the default file name
- *			- Try to open the given seed file
- *			- Read in a large number of random numbers into the given array
- *			- Close the file
- *		12. Declare a method to return a random number from the random number array
- *		13. Declare a method to prompt for the admin if they want to generate
- *				a new seed
- *			- Declare a Scanner object and a userInput String for input management
- *			- Prompt the user whether they'd like to generate a new seed
- *			- If the user says yes, then call the generateSeed method
- *			- Notify the user whether the seed file was generated or not
- *		
  *	Structure / Process
  *		
  *		The Seed class is meant to hold or generate a list of predefined pseudo
@@ -46,46 +19,60 @@
  *		same seed file is used repeatedly, the world will remain persistent, but
  *		if the seed file is newly generated, the world will be different and
  *		new.
- *		
- *	Author			- Nicholas Warner
- *	Created			- 4/24/2015
- *	Last Updated	- 4/30/2015
+ *</pre>
+ * @author Nicholas Warner
+ * @version 5.1, June 2015
+ * @see Room
+ * @see Item		
  */
+public final class Seed {
 
-// Import the necessary packages, classes, interfaces, ...
-import java.io.*;
-import java.util.Random;
-import java.util.Scanner;
-
-public class Seed {
-
-	// Generic Seed File
+	/** The generic Seed File to load from. */
 	public final static String DEFAULT_SEED_FILE	= "../seed/1.seed";
 
-	// Number of Random Doubles in Generic Seed File
+	/** The number of Random Doubles in Generic Seed File. */
 	public final static int SEED_FILE_SIZE	= 10000;
 
-	// The instance variable which holds the (working) seed file's name
+	/** The instance variable which holds the (working) seed file's name. */
 	private static String seedFileName = "";
 
-	// An array to hold the pseudo-random array of doubles
+	/** An array to hold the pseudo-random array of doubles. */
 	private static double[] randomList	= new double[10000];
-	// An int to hold the position in the randomList
+	/** An int to hold the position in the randomList. */
 	private static int positionInList	= 0;
 
-	// Method to return the seed file's name
+	/** A private constructor ensures this class cannot be instantiated. */
+	private Seed() {
+
+		throw new AssertionError();
+	}
+
+	/** 
+	 * A method to return the seed file's name.
+	 *
+	 * @return Returns a String with the name of the seed file.
+	 */
 	public static String getSeedFile() {
 		
 		return seedFileName;
 	}
 	
-	// Method to set the seed file's name	
+	/** 
+	 * A method to set the seed file's name.
+	 *
+	 * @param seedFile The new name of the seed file.
+	 */
 	public static void setSeedFile(String seedFile) {
 		
 		seedFileName = seedFile;
 	}
 
-	// A method to generate a new seed file
+	/** 
+	 * A method to generate a new seed file.
+	 *
+	 * @param seedFileName The name of the seed file to load the seeds from.
+	 * @param numOfSeeds The number of seeds to load from the file.
+	 */
 	public static void generateSeed(String seedFileName, int numOfSeeds) {
 
 		// Declare a new random number generator		
@@ -127,7 +114,7 @@ public class Seed {
 		}
 	}
 	
-	// Method to load our pseudo-random doubles into the array
+	/** A method to load the pseudo-random doubles into the array. */
 	public static void loadRandomNumbers() {
 		
 		// If the file name hasn't been set, set it to the default
@@ -171,7 +158,11 @@ public class Seed {
 		}
 	}
 	
-	// Method to return one number from the pseudo-random list then increment to the next
+	/** 
+	 * A method to return one number from the pseudo-random list then increment to the next.
+	 *
+	 * @return Returns the next number within the randomList of Pseudo-random numbers.
+	 */
 	public static double rand() {
 		
 		// If we've hit the end, let's start again
@@ -186,7 +177,7 @@ public class Seed {
 		return randomList[positionInList++];
 	}
 	
-	// Method which requests the admin to choose whether they want a new seed or not
+	/** A method which requests the admin to choose whether they want a new seed or not. */
 	public static void promptForSeed() {
 		
 		// Declare keyboard input
@@ -214,22 +205,5 @@ public class Seed {
 
 		// Reset the seed file name		
 		seedFileName = DEFAULT_SEED_FILE;
-	}
-	
-	// Our toString method
-	public String toString() {
-		
-		return "Class: Seed";
-	}
-	
-	// Our equals method
-	public boolean equals(Seed oneSeed) {
-		
-		if (toString().equals(oneSeed.toString())) {
-			
-			return true;
-		}
-		
-		return false;
 	}
 }
