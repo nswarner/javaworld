@@ -1,57 +1,3 @@
-/**
- *	Purpose
- *
- *		The World is a class that constitutes the overall physcial JavaWorld game. It contains a
- *		list of all rooms, and is part of the initial startup for loading rooms and generating
- *		dynamic rooms.
- *
- *	Algorithm
- *
- *		1. Declare the World Class
- *		2. Import the necessary packages, classes, interfaces, ...
- *		3. Declare a constant String to reference the primary Zone file path
- *		4. Declare a constant int which reflects the maximum number of rooms to generate
- *		5. Declare a constant int to reflect the "home" location of every player
- *			- Generally, this should always be (100, 100)
- *		6. Declare four constant ints to reflect the directions of north, south, east,
- *			and west, referenced via an array's index
- *		7. Declare six constant ints to cover the different room types
- *			- FOREST, LAKE, CITY, PARK, CAVE, MOUNTAIN
- *		8. Declare an array of room types (to go with 7)
- *		9. Declare a constant for the maximum number of rooms to be queued up to be
- *			built
- *		10. Declare a static 2D array to represent the World (x, y)
- *		11. Declare a static reference to the instantiated World
- *			- With a little effort, the world may be extended into multiple worlds
- *		12. Declare a String to represent the name of the world "Java World"
- *		13. Declare an ArrayList to represent the "soon to be built" rooms
- *		14. Declare an int to represent where we are in building new rooms
- *		15. Declare a boolean as a condition for when we're supposed to build new rooms and
- *			when we've built too many new rooms
- *		16. Declare a default constructor
- *		17. Declare a parameterized constructor
- *		18. Declare any necessary Accessor methods
- *		19. Declare a method to add a room to the World
- *		20. Declare a method to check if a given (x, y) room exists
- *		21. Declare a method to load all rooms, starting with the static rooms from the
- *			zone file and then loading the dynamic rooms
- *		22. Declare a method which is used to dynamically generate the World
- *		23. Declare a method to build a single room at a given (x, y)
- *		24. Declare a method to figure out which directions are possible to build a room in
- *		25. Declare a method to add another dynamic room
- *		26. Declare a toString method
- *		27. Declare an equals method
- *	Structure / Process
- *
- *		In the GameServer class, the World class is used to initially load the HOMELOCATION and it's
- *		surrounding rooms from a flat file. Then the World class is called to dynamically generate
- *		the surrounding world using the pseudo-random Seed class.
- *
- *	Author			- Nicholas Warner
- *	Created 		- 4/24/2015
- *	Last Updated	- 4/30/2015
- */
-
 // Import our packages
 import java.util.Scanner;
 import java.util.ArrayList;
@@ -60,53 +6,85 @@ import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.io.FileOutputStream;
 
-// The World Class
+/**
+ *<pre>
+ *	Purpose
+ *
+ *		The World is a class that constitutes the overall physcial JavaWorld game. It contains a
+ *		list of all rooms, and is part of the initial startup for loading rooms and generating
+ *		dynamic rooms.
+ *
+ *	Structure / Process
+ *
+ *		In the GameServer class, the World class is used to initially load the HOMELOCATION and it's
+ *		surrounding rooms from a flat file. Then the World class is called to dynamically generate
+ *		the surrounding world using the pseudo-random Seed class.
+ *</pre>
+ * @author Nicholas Warner
+ * @version 5.1, June 2015
+ */
 public class World {
 	
-	// A few constants; the starting zone flat file
+	/** The starting zone flat file. */
     public static final String ZONEFILE		= "../zones/StartingZone.zone";
-	// The maximum number of x rooms and y rooms (MAXROOMS^2 for max number of rooms)
+	/** The maximum number of x rooms and y rooms (MAXROOMS^2 for max number of rooms). */
     public static final int MAXROOMS		= 200;
-    // The home location of (100, 100), safety!
+    /** The home location of (100, 100), safety! */
 	public static final int HOMELOCATION   	= 100;
 
-	// Directions relating to movement
+	/** The shorthand for the North direction. */
 	private final int NORTH	= 0;
+	/** The shorthand for the East direction. */
 	private final int EAST	= 1;
+	/** The shorthand for the South direction. */
 	private final int SOUTH	= 2;
+	/** The shorthand for the West direction. */
 	private final int WEST	= 3;
 
-	// Different area types
+	/** A constant representing the FOREST area type. */
 	private final int FOREST	= 0;
+	/** A constant representing the LAKE area type. */
 	private final int LAKE		= 1;
+	/** A constant representing the CITY area type. */
 	private final int CITY		= 2;
+	/** A constant representing the PARK area type. */
 	private final int PARK		= 3;
+	/** A constant representing the CAVE area type. */
 	private final int CAVE		= 4;
+	/** A constant representing the MOUNTAIN area type. */
 	private final int MOUNTAIN	= 5;
 
-	// A String array of the different area types
+	/** A String array of the different area types. */
 	private final String[] roomTypes	= { "Forest", "Lake", "City", "Park", "Cave", "Mountain" };
 
-	// 200 here is arbitrary; we use this to know how to build our world
+	/** 
+	 * This holds the number of queued rooms to be built. When dynamically building the world,
+	 * each room is built and there is a random chance that an adjacent room will be built. If
+	 * the adjacent room is to be built, it is added to the queue of rooms to be built. If this
+	 * queue grows to MAX_QUEUED_ROOMS, the queue cannot grow any larger.
+	 */
 	private final int MAX_QUEUED_ROOMS	= 200;
 
-	// This is the actual "world"; a 2D array of Rooms
+	/** This is the actual "world"; a 2D array of Rooms. */
 	private static Room[][] rooms = new Room[MAXROOMS][MAXROOMS];
 
-	// The World is the world is the world
+	/** The World is the world is the world. This is the World. */
 	private static World world = null;
-	// The name of the world; JavaWorld!
+	/** The name of the world; JavaWorld! */
 	private String worldName;
-	// An arrayList for rooms which are going to be dynamically generated soon
+	/** An arrayList for rooms which are going to be dynamically generated soon. */
 	private ArrayList<Coordinate> newRoomList;
-	// Part of the newRoomList
+	/** Part of the newRoomList. */
 	private int buildingNextRoom;
-	// Knowing where we've already built
+	/** Knowing where we've already built. */
 	private int builtNextRoom;
-	// And when to stop adding rooms
+	/** 
+	 * A boolean which controls whether we cannot building, or if we've reached the
+	 * MAX_QUEUED_ROOMS, then to stop building.
+	 */
 	private boolean stopAddingRooms;
 
-	// Our default constructor	
+	/** The default World constructor. */
 	public World() {
 		
 		worldName			= "";
@@ -118,7 +96,11 @@ public class World {
 		stopAddingRooms		= false;
 	}
 	
-	// And paramterized constructor
+	/**
+	 * A constructor which takes an argument for the name of the World.
+	 *
+	 * @param name The name of the World to be constructed.
+	 */
 	public World(String name) {
 		
 		worldName			= name;
@@ -130,13 +112,23 @@ public class World {
 		stopAddingRooms		= false;
 	}
 
-	// Accessor Methods
+	/** 
+	 * A method to get a reference to the current World object.
+	 *
+	 * @return Returns a reference to the currently instantiated World object.
+	 */
 	public static World getWorld() {
 		
 		return world;
 	}
 	
-	// Return a single room
+	/**
+	 * A method to return a reference to a Room given by an (x, y) coordinate.
+	 *
+	 * @param x The X coordinate of the Room.
+	 * @param y The Y coordinate of the Room.
+	 * @return Returns a reference to the Room.
+	 */
 	public static Room getRoom(int x, int y) {
 		
 		// Make sure with bounds checking
@@ -151,12 +143,21 @@ public class World {
 		return null;
 	}
 
+	/**
+	 * A method to get the name of the World.
+	 *
+	 * @return Returns a String containing the name of the World.
+	 */
 	public String getWorldName() {
 		
 		return worldName;
 	}
 
-	// Return the coordiantes of the next room we'll dynamically build
+	/**
+	 * A method to return the coordiantes of the next room we'll dynamically build.
+	 *
+	 * @return Returns the coordinates of the next room to be dynamically built.
+	 */
 	private Coordinate getNextRoom() {
 
 		Coordinate temp = null;
@@ -202,8 +203,13 @@ public class World {
 		return temp;
 	}
 
-	// World Methods
-	// Let's add a given room to the specified (x, y)
+	/**
+	 * A method to add a given room to the specified (x, y).
+	 *
+	 * @param newRoom The new Room to be added to the array of Rooms.
+	 * @param x The X coordinate of the Room to be added.
+	 * @param y The Y coordinate of the Room to be added.
+	 */
 	public static void addRoom(Room newRoom, int x, int y) {
 	
 		// If the bounds are checked
@@ -225,7 +231,13 @@ public class World {
 		}
 	}
 
-	// Test whether a room exists or not
+	/**
+	 * A method to test whether a room exists or not.
+	 *
+	 * @param x The X coordinate of the Room.
+	 * @param y The Y coordinate of the Room.
+	 * @return Returns true if the room exists and false if not.
+	 */
     public static boolean checkRoomExists(int x, int y) {
 
 		// Bounds check
@@ -242,7 +254,7 @@ public class World {
         return false;
     }
 
-	// Let's load up the home zone
+	/** A method to load up the predefined, flat file, home zone. */
 	public void loadRooms() {
 
 		// Has an x and y
@@ -298,7 +310,11 @@ public class World {
 		System.out.println("Rooms loaded successfully.");
 	}
 
-	// And the method where we dynamically build the world
+	/**
+	 * A method to dynamically build the world.
+	 *
+	 * @param sizeOfWorld The size of the world we want to build.
+	 */
 	public void dynamicallyBuildWorld(int sizeOfWorld) {
 		
 		String fromDirection = "";
@@ -423,7 +439,13 @@ public class World {
 		}
 	}
 	
-	// Build a room given two coordinates and a room type
+	/** A method to build a room given two coordinates and a room type.
+	 *
+	 * @param locationX The X coordinate of the Room.
+	 * @param locationY The Y coordinate of the Room.
+	 * @param rType The Area type of the Room.
+	 * @return Returns a reference to a new Room object with the given x, y, and rType.
+	 */
 	private Room buildRoom(int locationX, int locationY, int rType) {
 	
 		// Make sure to bounds check
@@ -438,7 +460,14 @@ public class World {
 		return null;
 	}
 	
-	// Check the exits to see which directions have exits and which don't
+	/**
+	 * A method to check the exits to see which directions have exits and which don't.
+	 *
+	 * @param roomExists An array which indicates whether a room exists in any of the given
+	 *						directions of NORTH, SOUTH, EAST, WEST.
+	 * @param roomX The X coordinate of the Room.
+	 * @param roomY The Y coordinate of the Room.
+	 */
 	private void buildExitCheck(boolean[] roomExists, int roomX, int roomY) {
 		
 		if (World.checkRoomExists(roomX + 1, roomY)) {
@@ -482,7 +511,14 @@ public class World {
 		}
 	}
 	
-	// Add a coordinate object for x, y which represents a room that will be built in the future
+	/**
+	 * A method to add a coordinate object for x, y which represents a room that will 
+	 * be built in the future. This is used in the dynamic room building code and this
+	 * is an example of a queued room to be built.
+	 *
+	 * @param x The X coordinate of the Room to be built.
+	 * @param y The Y coordinate of the Room to be built.
+	 */
 	private void addNextRoom(int x, int y) {
 
 		// Ensure boundary checking
@@ -502,13 +538,24 @@ public class World {
 		}
 	}
 	
-	// toString method
+	/**
+	 * A method which returns some unique information about this World object.
+	 *
+	 * @return Returns a String containing the name of the World and the number of
+	 *			Rooms the world could have at a maximum.
+	 */
 	public String toString() {
 		
 		return worldName + "!\n\r" + MAXROOMS + "\n\r";
 	}
 	
-	// equals method
+	/**
+	 * A method which tests whether a given World Object is equal to this World.
+	 *
+	 * @param oneWorld The given World object to be tested against for equality.
+	 * @return Returns true if the World objects are equal and false if the
+	 *			World objects are not equal.
+	 */
 	public boolean equals(World oneWorld) {
 		
 		if (toString().equals(oneWorld.toString())) {
