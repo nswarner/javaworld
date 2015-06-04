@@ -1,34 +1,10 @@
+import java.util.StringTokenizer;
+
 /**
+ *<pre>
  * Purpose
  *		
  *		This class manipulates Strings in different ways as needed. Also handles ANSI color codes.
- *		
- * Algorithm
- *		
- *		1. Declare the TextManipulator Class
- *		2. Import the necessary packages, classes, interfaces, ...
- *		3. Declare constant Strings which represent the different ANSI color values
- *			- RESET, DULLBLACK, DULLRED, DULLGREEN, DULLYELLOW, ...
- *			- GREY, RED, GREEN, YELLOW, BLUE, ...
- *		4. Declare a method which colorizes a given String
- *			- Loop through the given String character by character
- * 			- If a character matches the "#", check the following character
- *				- If the following character is n, g, y, b, ...
- *					- Then add the ANSI color string instead of the "#n"
- *					- Then increment the String letter counter by 1
- * 		5. Declare a method to pull one word from a given String
- *		6. Declare a method to combine two columns of text into one (minimap + desc)
- *			- Find the newline width of column one (this is the main width)
- *			- While either String has something left to work with
- *				- Add a given "chunk" of column 1 then a given "chunk" of column 2
- *		7. Declare a method to split a String to a given column width
- *		8. Declare a String to pull one line from a given String (read until \n)
- *		9. Declare a method to remove a single line from a given String
- *		10. Declare a method to find the index of a given character while respecting
- *			the unseen color codes
- *		11. Declare a method to get the nth word from a given String
- *		12. Declare a toString method
- *		13. Declare an equals method
  *		
  * Structure / Process
  *		
@@ -36,38 +12,60 @@
  *		method in this class (called "addColor"). Beyond that, a lot of the functionality has
  *		to do with taking two paragraphs and making them into a two-column fit (automap + 
  *		room description).
- *		
- *	Author			- Nicholas Warner
- *	Created			- 4/24/2015
- *	Last Updated	- 5/1/2015
+ *</pre>	
+ * @author Nicholas Warner
+ * @version 5.1, June 2015	
  */
+public final class TextManipulator {
 
-// Import the StringTokenizer
-import java.util.StringTokenizer;
-
-public class TextManipulator {
-
-	// Some of the ANSI Color Codes
+	/** The normal color of text. */
 	private static final String ANSI_RESET		= "\033[0;0m";
+	/** The dull black color of text. */
 	private static final String ANSI_DULLBLACK	= "\033[0;30m";
+	/** The dull red color of text. */
 	private static final String ANSI_DULLRED	= "\033[0;31m";
+	/** The dull green color of text. */
 	private static final String ANSI_DULLGREEN	= "\033[0;32m";
+	/** The dull yellow color of text. Possibly brown. */
 	private static final String ANSI_DULLYELLOW = "\033[0;33m";
+	/** The dull blue color of text. */
 	private static final String ANSI_DULLBLUE	= "\033[0;34m";
+	/** The dull purple color of text. */
 	private static final String ANSI_DULLPURPLE = "\033[0;35m";
+	/** The dull cyan color of text. */
 	private static final String ANSI_DULLCYAN	= "\033[0;36m";
+	/** The dull white (silver/grey) color of text. */
 	private static final String ANSI_DULLWHITE	= "\033[0;37m";
-	
+
+	/** The strong grey color of text. */
 	private static final String ANSI_GREY		= "\033[1;30m";
+	/** The bright red color of text. */
 	private static final String ANSI_RED		= "\033[1;31m";
+	/** The bright green color of text. */
 	private static final String ANSI_GREEN		= "\033[1;32m";
+	/** The bright yellow color of text. */
 	private static final String ANSI_YELLOW		= "\033[1;33m";
+	/** The bright blue color of text. */
 	private static final String ANSI_BLUE		= "\033[1;34m";
+	/** The bright purple color of text. */
 	private static final String ANSI_PURPLE		= "\033[1;35m";
+	/** The bright cyan color of text. */
 	private static final String ANSI_CYAN		= "\033[1;36m";
+	/** The bright white color of text. */
 	private static final String ANSI_WHITE		= "\033[1;37m";
 
-	// We add color to the String and return the colorized String     
+	/** The private constructor, ensuring this class cannot be instantiated. */
+	private TextManipulator() {
+
+		throw new AssertionError();
+	}
+
+	/**
+	 * A method to add color to the given String and return the colorized String.
+	 *
+	 * @param text The String to be colorized.
+	 * @return Returns a String where color codes are replaced by their ansi codes.
+	 */
 	public static String addColor(String text) {
 		
 		// This holds the text we'll actually send back
@@ -170,7 +168,12 @@ public class TextManipulator {
 		return rebuiltText;
 	}
 
-	// Pulls one argument from the given String and returns it or returns ""
+	/**
+	 * A method which pulls one argument from the given String and returns it or returns "".
+	 *
+	 * @param argument The String which holds the argument to be pulled.
+	 * @return Returns a String containing the first token / word from the given argument.
+	 */
 	public static String oneArgument(String argument) {
 		
 		StringTokenizer st = new StringTokenizer(argument);
@@ -183,7 +186,15 @@ public class TextManipulator {
 		return "";
 	}
 
-    // We expect the left column to be fixed width, the right to be jumbled
+    /**
+	 * A method which takes a fixed width chunk of text, chunkOne, and aligns a second column
+	 * against the first column. Then you end up with two columns of text.
+	 *
+	 * @param chunkOne The String which contains the fixed width left column of text.
+	 * @param chunkTwo The String to be placed against the left side column.
+	 * @return Returns a String with two columns of text.
+	 * @see Interpreter#commandMap(Player)
+	 */
 	public static String smushLeft(String chunkOne, String chunkTwo) {
 
 		// Declare two Strings which act as single line chunks
@@ -229,7 +240,15 @@ public class TextManipulator {
 		return colOne;
 	}
 
-	// A method to split a given string at <newline> intervals
+	/** 
+	 * A method to split a given string at newLine intervals. This can be used to
+	 * generate a fixed width column of text from a given String.
+	 *
+	 * @param chunk The String to be split into intervals.
+	 * @param newLine The location of where newlines should be placed.
+	 * @return Returns a String that has a fixed column width of newLine in length.
+	 * @see #smushLeft
+	 */
 	public static String splitAString(String chunk, int newLine) {
 
 		// Temporary String Storage
@@ -298,7 +317,15 @@ public class TextManipulator {
 		return output;
 	}
 	
-	// A method to pull a single line from a given String
+	/**
+	 * A method to pull a single line from a given String.
+	 *
+	 * @param chunk The String which a single line will be pulled from.
+	 * @param length The length of the line to be pulled. If a newline is
+	 *					found before length, then that is returned, otherwise
+	 *					a line is returned up to length in length.
+	 * @return Returns a String containing the single line pulled from chunk.
+	 */
 	public static String oneLine(String chunk, int length) {
 		
 		// The line that'll be pulled
@@ -323,7 +350,15 @@ public class TextManipulator {
 		return line;
 	}
 	
-	// Declare a method to remove a single line from a given String
+	/**
+	 * A method to remove a single line from a given String.
+	 *
+	 * @param chunk The original String before the line is removed.
+	 * @param length The length of the line to be removed.
+	 * @return Returns a String containing the original text from chunk but
+	 *			with length characters removed OR the first line removed which
+	 *			is constituted by the first newline character.
+	 */
 	public static String consumeALine(String chunk, int length) {
 		
 		// A temporary String
@@ -348,7 +383,14 @@ public class TextManipulator {
 		return line;
 	}
 	
-	// A method to find the index of a given character in a given String ignoring color codes
+	/**
+	 * A method to find the index of a given character in a given String ignoring color codes.
+	 *
+	 * @param search The String intended to be searched.
+	 * @param character The character to be found in the String.
+	 * @return Returns an int which represents the location of the given character while
+	 *			ignoring color codes.
+	 */
 	public static int findColorIndexOf(String search, char character) {
 		
 		// A counter for the length (or index of the character)
@@ -394,7 +436,15 @@ public class TextManipulator {
 		return -1;
 	}
         
-    // A method which gets the nth word from a given String argument
+    /**
+	 * A method which gets the nth word from a given String argument.
+	 *
+	 * @param argument The String argument which holds the nth word.
+	 * @param n The number of words / tokens to pass by.
+	 * @param all Currently not implemented.
+	 * @return Returns a String which contains the nth word / token from
+	 *			the original String argument.
+	 */
 	public static String getArgumentN(String argument, int n, boolean all) {
             
         // A temporary holder String
@@ -428,22 +478,5 @@ public class TextManipulator {
         
         // Otherwise, we return the nth word
         return keyArgument;
-    }
-
-	// toString method    
-    public String toString() {
-    	
-    	return "Class: TextManipulator\n\r";
-    }
-    
-    // equals method
-    public boolean equals(TextManipulator tM) {
-    	
-    	if (toString().equals(tM.toString())) {
-    		
-    		return true;
-    	}
-    	
-    	return false;
     }
 }

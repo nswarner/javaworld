@@ -1,35 +1,32 @@
+import java.util.StringTokenizer;
+
 /**
+ *<pre>
  *	Purpose
  *
  *		The ToolKit class holds methods which are useful but don't necessarily have a spot in
  *		other classes. 
  *
- *	Algorithm
- *
- *		1. Declare the ToolKit class
- *		2. Import the StringTokenizer class
- *		3. Declare a slow method (deprecated; initial testing purposes only)
- *		4. Declare a hasNumber method to test whether a String has a number or not
- *		5. Declare a hasQuotes method to test whether a String has quotes or not
- *		6. Declare a rand method to return a random number between upper and lower bounds
- *		7. Declare a toString method
- *		8. Declare an equals method
- *
  *	Structure / Process
  *
  *		Methods are used statically as needed.
- *
- *	Author			- Nicholas Warner
- *	Created 		- 4/24/2015
- *	Last Updated	- 4/30/2015
+ *</pre>
+ * @author Nicholas Warner
+ * @version 5.1, June 2015
  */
+public final class ToolKit {
 
-// Import necessary packages, classes, interfaces, etc.
-import java.util.StringTokenizer;
+	/** The private constructor ensuring the class cannot be instantiated. */
+	private ToolKit() {
 
-public class ToolKit {
-	
-	// Deprecated
+		throw new AssertionError();
+	}
+
+	/**
+	 * A method to slow down the game's main loop.
+	 *
+	 * @param loopsPerSecond The game should slow to this many loops per second.
+	 */
 	public static void slow(long loopsPerSecond) {
 		
 		// Avoid a divide by 0 Exception
@@ -51,7 +48,13 @@ public class ToolKit {
 		}
 	}
 
-	// A method used to pull a random number between an upper and lower bound    
+	/**
+	 * A method used to pull a random number between an upper and lower bound.
+	 *
+	 * @param lower The lower bound of the random number.
+	 * @param upper The upper bound of the random number.
+	 * @return Returns an int between lower and upper.
+	 */
     public static int rand(int lower, int upper) {
         
         // Get the random number
@@ -66,22 +69,5 @@ public class ToolKit {
         
         // Return the number as an int
         return (int)rNum;
-    }
-
-	// toString method    
-    public String toString() {
-    	
-    	return ("Class: ToolKit");
-    }
-    
-    // Equals method
-    public boolean equals(ToolKit oneToolKit) {
-    	
-    	if (oneToolKit.toString().equals(toString())) {
-    		
-    		return true;
-    	}
-    	
-    	return false;
     }
 }
