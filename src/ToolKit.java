@@ -71,15 +71,26 @@ public final class ToolKit {
         return (int)rNum;
     }
 	
+	/**
+	 * A method used to simulate the act of gambling.
+	 *
+	 * @param lower The lower bound of the gambling activity.
+	 * @param upper The upper bound of the gambling activity.
+	 * @param guess The user's guess at the act of gambling.
+	 * @return Returns the boolean value of the outcome of gambling
+	 */
 	public static boolean gamble(int lower, int upper, int guess) {
 		
+		// Get the random number within the boundaries
 		double rNum = rand(lower, upper);
 		
+		// If they succeeded, let them know
 		if (guess == rNum) {
 			
 			return Boolean.TRUE;
 		}
 		
+		// Default, they failed
 		return Boolean.FALSE;
 	}
 }
