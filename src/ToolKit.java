@@ -70,4 +70,16 @@ public final class ToolKit {
         // Return the number as an int
         return (int)rNum;
     }
+	
+	public static boolean gamble(int lower, int upper, int guess) {
+		
+		double rNum = rand(lower, upper);
+		
+		if (guess == rNum) {
+			
+			return Boolean.TRUE;
+		}
+		
+		return Boolean.FALSE;
+	}
 }
