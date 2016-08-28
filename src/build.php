@@ -17,8 +17,6 @@
 	the `ls -lst` command. Since this is only precise to the minute, attempting
 	to build several times in a single minute will not have the desired effect.
 
-	
-	
 */
 
 // Find the most recent timestamp file
