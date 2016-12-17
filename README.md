@@ -6,4 +6,4 @@ Hmm.
 Thoughts
 --------
 
-Some more thoughts.
+Some more thoughts. .
